@@ -1,0 +1,68 @@
+#! /c/Source/iverilog-install/bin/vvp
+:ivl_version "12.0 (devel)" "(s20150603-1110-g18392a46)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision - 12;
+:vpi_module "C:\iverilog\lib\ivl\system.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_sys.vpi";
+:vpi_module "C:\iverilog\lib\ivl\vhdl_textio.vpi";
+:vpi_module "C:\iverilog\lib\ivl\v2005_math.vpi";
+:vpi_module "C:\iverilog\lib\ivl\va_math.vpi";
+S_0000029e842bae30 .scope module, "causecontrolmux_TB" "causecontrolmux_TB" 2 4;
+ .timescale -6 -12;
+v0000029e84302b90_0 .var "controlSingal_TB", 1 0;
+v0000029e84302c30_0 .var "entry0_TB", 7 0;
+v0000029e843037c0_0 .var "entry1_TB", 7 0;
+v0000029e84302d20_0 .var "entry2_TB", 7 0;
+v0000029e84302e60_0 .net "out_TB", 7 0, L_0000029e84303a40;  1 drivers
+S_0000029e84305960 .scope module, "DUT" "causecontrolmux" 2 10, 3 2 0, S_0000029e842bae30;
+ .timescale -6 -12;
+    .port_info 0 /INPUT 8 "entry0";
+    .port_info 1 /INPUT 8 "entry1";
+    .port_info 2 /INPUT 8 "entry2";
+    .port_info 3 /INPUT 2 "controlSingal";
+    .port_info 4 /OUTPUT 8 "out";
+L_0000029e8434b858 .functor BUFT 1, C4<00>, C4<0>, C4<0>, C4<0>;
+v0000029e842b7160_0 .net/2u *"_ivl_0", 1 0, L_0000029e8434b858;  1 drivers
+v0000029e842b6d20_0 .net *"_ivl_2", 0 0, L_0000029e84303b80;  1 drivers
+L_0000029e8434b8a0 .functor BUFT 1, C4<01>, C4<0>, C4<0>, C4<0>;
+v0000029e842bafc0_0 .net/2u *"_ivl_4", 1 0, L_0000029e8434b8a0;  1 drivers
+v0000029e842bb060_0 .net *"_ivl_6", 0 0, L_0000029e84303c20;  1 drivers
+v0000029e84305af0_0 .net *"_ivl_8", 7 0, L_0000029e84302dc0;  1 drivers
+v0000029e84305b90_0 .net "controlSingal", 1 0, v0000029e84302b90_0;  1 drivers
+v0000029e84305c30_0 .net "entry0", 7 0, v0000029e84302c30_0;  1 drivers
+v0000029e84305cd0_0 .net "entry1", 7 0, v0000029e843037c0_0;  1 drivers
+v0000029e84305d70_0 .net "entry2", 7 0, v0000029e84302d20_0;  1 drivers
+v0000029e84302af0_0 .net "out", 7 0, L_0000029e84303a40;  alias, 1 drivers
+L_0000029e84303b80 .cmp/eq 2, v0000029e84302b90_0, L_0000029e8434b858;
+L_0000029e84303c20 .cmp/eq 2, v0000029e84302b90_0, L_0000029e8434b8a0;
+L_0000029e84302dc0 .functor MUXZ 8, v0000029e84302d20_0, v0000029e843037c0_0, L_0000029e84303c20, C4<>;
+L_0000029e84303a40 .functor MUXZ 8, L_0000029e84302dc0, v0000029e84302c30_0, L_0000029e84303b80, C4<>;
+    .scope S_0000029e842bae30;
+T_0 ;
+    %vpi_call 2 13 "$dumpfile", "causecontrolmux_TB.vcd" {0 0 0};
+    %vpi_call 2 14 "$dumpvars", 32'sb00000000000000000000000000000000, S_0000029e842bae30 {0 0 0};
+    %pushi/vec4 255, 0, 8;
+    %store/vec4 v0000029e84302c30_0, 0, 8;
+    %pushi/vec4 15, 0, 8;
+    %store/vec4 v0000029e843037c0_0, 0, 8;
+    %pushi/vec4 1, 0, 8;
+    %store/vec4 v0000029e84302d20_0, 0, 8;
+    %pushi/vec4 0, 0, 2;
+    %store/vec4 v0000029e84302b90_0, 0, 2;
+    %delay 10000000, 0;
+    %pushi/vec4 1, 0, 2;
+    %store/vec4 v0000029e84302b90_0, 0, 2;
+    %delay 10000000, 0;
+    %pushi/vec4 2, 0, 2;
+    %store/vec4 v0000029e84302b90_0, 0, 2;
+    %delay 10000000, 0;
+    %pushi/vec4 0, 0, 2;
+    %store/vec4 v0000029e84302b90_0, 0, 2;
+    %end;
+    .thread T_0;
+# The file index is used to find the file name in the following table.
+:file_names 4;
+    "N/A";
+    "<interactive>";
+    "causecontrolmux_TB.v";
+    "./causecontrolmux.v";

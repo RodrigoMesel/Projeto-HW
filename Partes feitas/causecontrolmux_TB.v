@@ -16,6 +16,7 @@ module causecontrolmux_TB ();
             entry0_TB = 8'b11111111; entry1_TB = 8'b00001111; entry2_TB = 8'b00000001; controlSingal_TB = 2'b00;
             #10 controlSingal_TB = 2'b01;
             #10 controlSingal_TB = 2'b10;
+            #10 controlSingal_TB = 2'b00;
 
         
     end 
