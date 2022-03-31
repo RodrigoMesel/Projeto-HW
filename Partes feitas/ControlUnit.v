@@ -1,31 +1,31 @@
 
 module ControlUnit (
     
-    input clk, reset;
+    input clk, reset,
     
-    input wire O;
+    input wire O,
 
-    input wire [5:0] OpCode, Funct;
+    input wire [5:0] OpCode, Funct,
 
-    output reg [2:0] IorD;
-    output reg MemWR;
-    output reg IRWrite;
-    output reg [1:0] RegDst;
-    output reg RegWR;
-    output reg WriteA;
-    output reg WriteB;
-    output reg [1:0] AluSrcA;
-    output reg [2:0] AluSrcB;
-    output reg [2:0] AluOperation;
-    output reg AluOutWrite;
-    output reg [2:0] MemToReg;
-    output reg [2:0] PCSource;
-    output reg PCWrite;
-    output reg zero;
-    output reg LT;
-    output reg ET;
-    output reg GT;
-    output reg neg; 
+    output reg [2:0] IorD,
+    output reg MemWR,
+    output reg IRWrite,
+    output reg [1:0] RegDst,
+    output reg RegWR,
+    output reg WriteA,
+    output reg WriteB,
+    output reg [1:0] AluSrcA,
+    output reg [2:0] AluSrcB,
+    output reg [2:0] AluOperation,
+    output reg AluOutWrite,
+    output reg [2:0] MemToReg,
+    output reg [2:0] PCSource,
+    output reg PCWrite,
+    output reg zero,
+    output reg LT,
+    output reg ET,
+    output reg GT,
+    output reg neg 
 
     );
 
