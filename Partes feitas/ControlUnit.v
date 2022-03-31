@@ -22,6 +22,7 @@ module ControlUnit (
     output reg [2:0] PCSource,
     output reg PCWrite,
     output reg zero,
+    output reg O,
     output reg LT,
     output reg ET,
     output reg GT,
@@ -258,8 +259,6 @@ module ControlUnit (
             end
 
 
-
-            default: 
         endcase
         
     end
