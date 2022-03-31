@@ -3,6 +3,7 @@ module CPU (input clk, reset);
 
     wire [31:0] temp32;
 
+    //Data Wires
     wire [31:0] PCOut;
     wire [7:0] CauseControlOut;
     wire [31:0] IorDOut;
@@ -13,36 +14,23 @@ module CPU (input clk, reset);
     wire [15:0] IRout4;
     wire [31:0] PCSourceResult;
     wire [31:0] Imediato;
-
     wire [31:0] BRoutA;
     wire [31:0] BRoutB;
-
     wire [31:0] AOut;
     wire [31:0] BOut;
-
     wire [31:0] MuxResultA;
     wire [31:0] MuxResultB;
-
     wire [31:0] AluOutResult;
     wire [31:0] MuxMemToRegOut;
     wire [4:0] IR_15_11 = IRout4[15:11];
     wire [4:0] MuxRegDstOut;
     wire [31:0] MemDataRegisterOut;
     wire [31:0] LoadOut;
-
-    //ALU
-    wire zero;
-    wire LT;
-    wire ET;
-    wire GT;
-    wire O;
-    wire neg; 
     wire [31:0] AluResult;
 
-    wire [31:0] temp32Aux;
+    //ALU
 
-    parameter sp = 5'b11101;
-    parameter ra = 5'b11111;
+
 
     //Sinais de controle
     wire [2:0] IorD;
@@ -61,6 +49,20 @@ module CPU (input clk, reset);
     wire PCWrite;
     wire MemDataWrite;
     wire LoudControl;
+    wire zero;
+    wire LT;
+    wire ET;
+    wire GT;
+    wire O;
+    wire neg; 
+
+    //Extras
+    
+    wire [31:0] temp32Aux;
+
+    parameter sp = 5'b11101;
+    parameter ra = 5'b11111;
+
 
     muxpcsource muxpcsource(
     temp32, temp32, AluResult, temp32, temp32, temp32, PCSource, PCSourceResult
