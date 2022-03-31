@@ -8,12 +8,12 @@ module CPU (input clk, reset);
     wire [7:0] CauseControlOut;
     wire [31:0] IorDOut;
     wire [31:0] MemOut;
-    wire [5:0] IRout1;
-    wire [4:0] IRout2;
-    wire [4:0] IRout3;
-    wire [15:0] IRout4;
+    wire [5:0] OpCode;
+    wire [4:0] RS;
+    wire [4:0] RT;
+    wire [15:0] Imediato;
     wire [31:0] PCSourceResult;
-    wire [31:0] Imediato;
+    wire [31:0] OFFSet;
     wire [31:0] BRoutA;
     wire [31:0] BRoutB;
     wire [31:0] AOut;
@@ -22,7 +22,7 @@ module CPU (input clk, reset);
     wire [31:0] MuxResultB;
     wire [31:0] AluOutResult;
     wire [31:0] MuxMemToRegOut;
-    wire [4:0] IR_15_11 = IRout4[15:11];
+    wire [4:0] IR_15_11 = Imediato[15:11];
     wire [4:0] MuxRegDstOut;
     wire [31:0] MemDataRegisterOut;
     wire [31:0] LoadOut;
@@ -81,19 +81,19 @@ module CPU (input clk, reset);
     );
 
     Instr_Reg IR(
-        clk, reset, IRWrite, MemOut, IRout1, IRout2, IRout3, IRout4
+        clk, reset, IRWrite, MemOut, OpCode, RS, RT, Imediato
     );
 
-    signext16_32 imediato(
-        IRout4, Imediato
+    signext16_32 offset(
+        Imediato, OFFSet
     );
 
     muxregdst regdst(
-        IRout3, IR_15_11, ra, sp, RegDst, MuxRegDstOut
+        RT, IR_15_11, ra, sp, RegDst, MuxRegDstOut
     );
 
     Banco_reg BR(
-        clk, reset, RegWR, IRout2, IRout3, MuxRegDstOut, MuxMemToRegOut, BRoutA, BRoutB
+        clk, reset, RegWR, RS, RT, MuxRegDstOut, MuxMemToRegOut, BRoutA, BRoutB
     );
 
     Registrador A(
@@ -109,7 +109,7 @@ module CPU (input clk, reset);
     );
 
     muxalusrcB muxalusrcb(
-        BOut, 32'b00000000000000000000000000000100, Imediato, temp32, temp32, AluSrcB, MuxResultB
+        BOut, 32'b00000000000000000000000000000100, OFFSet, temp32, temp32, AluSrcB, MuxResultB
     );
 
     ula32 ALU(
@@ -133,7 +133,7 @@ module CPU (input clk, reset);
     );
 
     ControlUnit UnitOfControl(
-        clk, reset, O, IRout1, IRout4[5:0],
+        clk, reset, O, OpCode, Imediato[5:0],
         IorD, MemWR, IRWrite, RegDst, RegWR, WriteA, WriteB,
         AluSrcA, AluSrcB, AluOperation, AluOutWrite, MemToReg, 
         PCSource, PCWrite, zero, LT, ET, GT, neg
