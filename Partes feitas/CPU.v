@@ -58,7 +58,7 @@ module CPU (input clk, reset);
 
     //Extras
     
-    wire [31:0] temp32Aux;
+    wire [31:0] StoreOut; // IMPLEMENTAR
 
     parameter sp = 5'b11101;
     parameter ra = 5'b11111;
@@ -77,7 +77,7 @@ module CPU (input clk, reset);
     );
 
     Memoria mem(
-        IorDOut, clk, MemWR, temp32Aux, MemOut
+        IorDOut, clk, MemWR, StoreOut, MemOut
     );
 
     Instr_Reg IR(
