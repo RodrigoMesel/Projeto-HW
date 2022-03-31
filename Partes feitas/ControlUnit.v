@@ -22,7 +22,6 @@ module ControlUnit (
     output reg [2:0] PCSource,
     output reg PCWrite,
     output reg zero,
-    output reg O,
     output reg LT,
     output reg ET,
     output reg GT,
@@ -146,7 +145,6 @@ module ControlUnit (
                         LT = 0;
                         ET = 0;
                         GT = 0;
-                        O = 0;
                         neg = 0; 
 
                         IorD = 000;
