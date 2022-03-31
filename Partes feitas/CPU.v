@@ -13,7 +13,7 @@ module CPU (input clk, reset);
     wire [4:0] RT;
     wire [15:0] Imediato;
     wire [31:0] PCSourceResult;
-    wire [31:0] OFFSet;
+    wire [31:0] ImediatoExtendido32bits;
     wire [31:0] BRoutA;
     wire [31:0] BRoutB;
     wire [31:0] AOut;
@@ -84,8 +84,9 @@ module CPU (input clk, reset);
         clk, reset, IRWrite, MemOut, OpCode, RS, RT, Imediato
     );
 
-    signext16_32 offset(
-        Imediato, OFFSet
+    signext16_32 imediatoExtender(
+        Imediato, ImediatoExtendido32bits
+
     );
 
     muxregdst regdst(
@@ -109,7 +110,8 @@ module CPU (input clk, reset);
     );
 
     muxalusrcB muxalusrcb(
-        BOut, 32'b00000000000000000000000000000100, OFFSet, temp32, temp32, AluSrcB, MuxResultB
+        BOut, 32'b00000000000000000000000000000100, ImediatoExtendido32bits
+, temp32, temp32, AluSrcB, MuxResultB
     );
 
     ula32 ALU(
@@ -136,7 +138,7 @@ module CPU (input clk, reset);
         clk, reset, O, OpCode, Imediato[5:0],
         IorD, MemWR, IRWrite, RegDst, RegWR, WriteA, WriteB,
         AluSrcA, AluSrcB, AluOperation, AluOutWrite, MemToReg, 
-        PCSource, PCWrite, zero, LT, ET, GT, neg
+        PCSource, PCWrite, zero, LT, ET, GT, neg, reset
     );
 
 

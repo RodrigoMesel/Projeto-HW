@@ -25,12 +25,19 @@ module ControlUnit (
     output reg LT,
     output reg ET,
     output reg GT,
-    output reg neg 
+    output reg neg,
+    output reg reset_out
 
     );
 
+    //Variáveis
 
-    parameter rst = 6'b000000;
+    reg [5:0] state;
+    reg [4:0] counter;
+
+    //Estados
+
+    parameter RESET_State = 6'b111111;
     parameter fetch = 6'b000001;
     parameter decode = 6'b000010;
     parameter op404 = 6'b000011;
@@ -116,149 +123,318 @@ module ControlUnit (
     parameter Jop = 6'b000010;
     parameter JALop = 6'b000011;
 
-    reg [5:0] state;
-    reg [4:0] counter;
+    //Reset
+
+    initial begin
+        reset_out = 1'b1;
+    end
 
     always @(posedge clk) begin
 
-        counter = 5'b00000;
-        state = fetch;
+        if(reset == 1'b1)begin
+            if(state != RESET_State)begin
+
+                state = RESET_State; //*
+
+                //Setando todos os outputs para 0
+                IorD = 3'b000;
+                MemWR = 1'b0;
+                IRWrite = 1'b0;
+                RegDst = 2'b00;
+                RegWR = 1'b0;
+                WriteA = 1'b0;
+                WriteB = 1'b0;
+                AluSrcA = 2'b00;
+                AluSrcB = 3'b000;
+                AluOperation = 3'b000;
+                AluOutWrite = 1'b0;
+                MemToReg = 3'b000;
+                PCSource = 3'b000;
+                PCWrite = 1'b0;
+                zero = 1'b0;
+                LT = 1'b0;
+                ET = 1'b0;
+                GT = 1'b0;
+                neg = 1'b0;
+                reset_out = 1'b1; //*
+
+                //FALTA RESETAR A PILHA
+
+                counter = 5'b0000;
+                
+            end else begin
+                
+                state = fetch; //*
+
+                //Setando todos os outputs para 0
+                IorD = 3'b000;
+                MemWR = 1'b0;
+                IRWrite = 1'b0;
+                RegDst = 2'b00;
+                RegWR = 1'b0;
+                WriteA = 1'b0;
+                WriteB = 1'b0;
+                AluSrcA = 2'b00;
+                AluSrcB = 3'b000;
+                AluOperation = 3'b000;
+                AluOutWrite = 1'b0;
+                MemToReg = 3'b000;
+                PCSource = 3'b000;
+                PCWrite = 1'b0;
+                zero = 1'b0;
+                LT = 1'b0;
+                ET = 1'b0;
+                GT = 1'b0;
+                neg = 1'b0;
+                reset_out = 1'b0; //*
+
+                //FALTA RESETAR A PILHA
+
+                counter = 5'b0000;
+
+            end
+
+        end else begin
         
-        case (state)
-            fetch: begin
-                if(counter < 5'b00011)begin
+            case (state)
+                fetch: begin
+                    if(counter < 5'b00011)begin
 
-                        MemWR = 0;
-                        IRWrite = 0;
-                        RegDst = 00;
-                        RegWR = 0;
-                        WriteA = 0;
-                        WriteB = 0;
-                        AluSrcA = 00;
-                        AluSrcB = 000;
-                        AluOperation = 000;
-                        AluOutWrite = 0;
-                        MemToReg = 000;
-                        PCSource = 000;
-                        PCWrite = 0;
-                        zero = 0;
-                        LT = 0;
-                        ET = 0;
-                        GT = 0;
-                        neg = 0; 
+                            IRWrite = 1'b0;
+                            RegDst = 2'b00;
+                            RegWR = 1'b0;
+                            WriteA = 1'b0;
+                            WriteB = 1'b0;
+                            AluOutWrite = 1'b0;
+                            MemToReg = 3'b000;
+                            PCWrite = 1'b0;
+                            zero = 1'b0;
+                            LT = 1'b0;
+                            ET = 1'b0;
+                            GT = 1'b0;
+                            neg = 1'b0;
+                            reset_out = 1'b0;
 
-                        IorD = 000;
-                        MemWR = 0;
-                        AluSrcA = 00;
-                        AluSrcB = 001;
-                        AluOperation = 001;
-                        PCSource = 010;
+                            IorD = 3'b000;
+                            MemWR = 1'b0;
+                            AluSrcA = 2'b00;
+                            AluSrcB = 3'b001;
+                            AluOperation = 3'b001;
+                            PCSource = 3'b010;
 
-                        counter = counter + 5'b00001;
+                            counter = counter + 5'b00001;
 
-                end else begin
+                    end else begin
 
-                    IRWrite = 1;
-                    PCWrite = 1;
-                    counter = 5'b00000;
-                    state = decode;
-                end
-            end
+                        //PRECISA POR TODOS OS SINAIS AQUI DNVO?
 
-            decode: begin
-                if(counter < 5'b00010)begin
-                    AluSrcA = 100;
-                    AluSrcB = 00;
-                    AluOperation = 001;
-                    RegWR = 0;
-                    AluOutWrite = 1;
-                    WriteA = 1;
-                    WriteB = 1;
-                    
-                    counter = counter + 5'b00001;
-                end else begin
-
-                    counter = 5'b00000;
-
-                    case(OpCode)
-                        opcodeR:
-                            case(Funct)
-                                ADDFunct: state = ADD;
-                                ANDFunct: state =  AND;
-                                DIVFunct: state =  DIV;
-                                MULTFunct: state =  MULT;
-                                JRFunct: state =  JR;
-                                MFHIFunct: state =  MFHI;
-                                MFLOFunct: state =  MFLO;
-                                SLLFunct: state =  SLL;
-                                SLLVFunct: state =  SLLV;
-                                SLTFunct: state =  SLT;
-                                SRAFunct: state =  SRA;
-                                SRAVFunct: state =  SRAV;
-                                SRLFunct: state =  SRL;
-                                SUBFunct: state =  SUB;
-                                BREAKFunct: state =  BREAK;
-                                RTEFunct: state =  RTE;
-                                ADDMFunct: state =  ADDM;
-
-                            endcase
-                        ADDIop: state = ADDI;
-                        ADDIUop: state = ADDIU;
-                        BEQop: state = BEQ;
-                        BNEop: state = BNE;
-                        BLEop: state = BLE;
-                        BGTop: state = BGT;
-                        SLLMop: state = SLLM;
-                        LBop: state = LB;
-                        LHop: state = LH;
-                        LWop: state = LW;
-                        SBop: state = SB;
-                        SHop: state = SH;
-                        SWop: state = SW;
-                        SLTIop: state = SLTI;
-                        LUIop: state = LUI;
-
-                        Jop: state = J;
-                        JALop: state = JAL;
-                    endcase
-
-                end
-            end
-
-            ADD: begin
-
-                counter = 5'b00000;
-                
-                if(counter == 5'b00000)begin
-                    AluSrcA = 10;
-                    AluSrcB = 000;
-                    AluOperation = 001;
-                    AluOutWrite = 1;
-                    
-                    counter = counter + 5'b00001;
-                
-                end else if(counter == 5'b00001)begin
-
-                    if(O == 1)begin
+                        IRWrite = 1;
+                        PCWrite = 1;
                         counter = 5'b00000;
-                        state = overflow;
+                        state = decode;
+                    end
+                end
+
+                decode: begin
+                    if(counter < 5'b00010)begin
+                        AluSrcA = 100;
+                        AluSrcB = 00;
+                        AluOperation = 001;
+                        RegWR = 0;
+                        AluOutWrite = 1;
+                        WriteA = 1;
+                        WriteB = 1;
+                        
+                        counter = counter + 5'b00001;
+                    end else begin
+
+                        counter = 5'b00000;
+
+                        case(OpCode)
+                            opcodeR:
+                                case(Funct)
+                                    ADDFunct: begin
+                                         state = ADD;
+                                        end
+                                    ANDFunct: begin
+                                         state =  AND;
+                                        end
+                                    DIVFunct: begin
+                                         state =  DIV;
+                                        end
+                                    MULTFunct: begin
+                                         state =  MULT;
+                                        end
+                                    JRFunct: begin
+                                         state =  JR;
+                                        end
+                                    MFHIFunct: begin
+                                         state =  MFHI;
+                                        end
+                                    MFLOFunct: begin
+                                         state =  MFLO;
+                                        end
+                                    SLLFunct: begin
+                                         state =  SLL;
+                                        end
+                                    SLLVFunct: begin
+                                         state =  SLLV;
+                                        end
+                                    SLTFunct: begin
+                                         state =  SLT;
+                                        end
+                                    SRAFunct: begin
+                                         state =  SRA;
+                                        end
+                                    SRAVFunct: begin
+                                         state =  SRAV;
+                                        end
+                                    SRLFunct: begin
+                                         state =  SRL;
+                                        end
+                                    SUBFunct: begin
+                                         state =  SUB;
+                                        end
+                                    BREAKFunct: begin
+                                         state =  BREAK;
+                                        end
+                                    RTEFunct: begin
+                                         state =  RTE;
+                                        end
+                                    ADDMFunct: begin
+                                         state =  ADDM;
+                                        end
+
+                                endcase
+                            ADDIop: begin
+                                 state = ADDI;
+                                end
+                            ADDIUop: begin
+                                 state = ADDIU;
+                                end
+                            BEQop: begin
+                                 state = BEQ;
+                                end
+                            BNEop: begin
+                                 state = BNE;
+                                end
+                            BLEop: begin
+                                 state = BLE;
+                                end
+                            BGTop: begin
+                                 state = BGT;
+                                end
+                            SLLMop: begin
+                                 state = SLLM;
+                                end
+                            LBop: begin
+                                 state = LB;
+                                end
+                            LHop: begin
+                                 state = LH;
+                                end
+                            LWop: begin
+                                 state = LW;
+                                end
+                            SBop: begin
+                                 state = SB;
+                                end
+                            SHop: begin
+                                 state = SH;
+                                end
+                            SWop: begin
+                                 state = SW;
+                                end
+                            SLTIop: begin
+                                 state = SLTI;
+                                end
+                            LUIop: begin
+                                 state = LUI;
+                                end
+
+                            Jop: begin
+                                 state = J;
+                                end
+                            JALop: begin
+                                 state = JAL;
+                                end
+                        endcase
+
+                    end
+                end
+
+                ADD: begin
+
+                    counter = 5'b00000;
+                    
+                    if(counter == 5'b00000)begin
+                        AluSrcA = 10;
+                        AluSrcB = 000;
+                        AluOperation = 001;
+                        AluOutWrite = 1;
+                        MemToReg = 3'b011;
+                        RegDst = 2'b01;
+                        RegWR = 1'b1;
+                        
+                        counter = counter + 5'b00001;
+                    
+                    end else if(counter == 5'b00001)begin
+
+                        if(O == 1)begin
+                            counter = 5'b00000;
+                            state = overflow;
+                        end
+
+                        else begin
+                            MemToReg = 011;
+                            RegDst = 01;
+                            RegWR = 1;
+
+                            counter = 5'b00000;
+                            state = fetch;
+                        end
+                    
+
                     end
 
-                    else begin
-                        MemToReg = 011;
-                        RegDst = 01;
-                        RegWR = 1;
-                    end
-                
 
                 end
 
+                RESET_State: begin
 
-            end
+                    if(counter = 5'b00000)begin
 
+                            state = RESET_State; //*
 
-        endcase
-        
+                            //Setando todos os outputs para 0
+                            IorD = 3'b000;
+                            MemWR = 1'b0;
+                            IRWrite = 1'b0;
+                            RegDst = 2'b00;
+                            RegWR = 1'b0;
+                            WriteA = 1'b0;
+                            WriteB = 1'b0;
+                            AluSrcA = 2'b00;
+                            AluSrcB = 3'b000;
+                            AluOperation = 3'b000;
+                            AluOutWrite = 1'b0;
+                            MemToReg = 3'b000;
+                            PCSource = 3'b000;
+                            PCWrite = 1'b0;
+                            zero = 1'b0;
+                            LT = 1'b0;
+                            ET = 1'b0;
+                            GT = 1'b0;
+                            neg = 1'b0;
+                            reset_out = 1'b1;
+
+                    end
+
+                end
+
+            endcase
+        end
+
     end
 
 endmodule
