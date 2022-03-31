@@ -166,7 +166,7 @@ module ControlUnit (
                 end
             end
 
-            decode:
+            decode: begin
                 if(counter < 5'b00010)begin
                     AluSrcA = 100;
                     AluSrcB = 00;
@@ -224,6 +224,7 @@ module ControlUnit (
                     endcase
 
                 end
+            end
 
             ADD: begin
 
