@@ -55,7 +55,7 @@ module ControlUnit (
     parameter RTE = 6'b010110;
     parameter ADDM = 6'b010111;
     parameter ADDI = 6'b011000;
-    parameter ADIIU = 6'b011001;
+    parameter ADDIU = 6'b011001;
     parameter BEQ = 6'b011010;
     parameter BNE = 6'b011011;
     parameter BLE = 6'b011100;

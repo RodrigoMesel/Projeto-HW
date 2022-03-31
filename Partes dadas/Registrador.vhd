@@ -3,9 +3,9 @@
 -- Project		: CPU Multi-ciclo
 --------------------------------------------------------------------------------
 -- File			: Registrador.vhd
--- Author		: Emannuel Gomes Macï¿½do (egm@cin.ufpe.br)
+-- Author		: Emannuel Gomes Macêdo (egm@cin.ufpe.br)
 --				  Fernando Raposo Camara da Silva (frcs@cin.ufpe.br)
---				  Pedro Machado Manhï¿½es de Castro (pmmc@cin.ufpe.br)
+--				  Pedro Machado Manhães de Castro (pmmc@cin.ufpe.br)
 --				  Rodrigo Alves Costa (rac2@cin.ufpe.br)
 -- Organization : Universidade Federal de Pernambuco
 -- Created		: 11/07/2002
@@ -16,7 +16,7 @@
 -- Targets		: 
 -- Dependency	: 
 --------------------------------------------------------------------------------
--- Description	: Entidade que representa a unidade bï¿½sica de uma cpu ou um
+-- Description	: Entidade que representa a unidade básica de uma cpu ou um
 -- circuito que armazena dados na forma de bits.
 --------------------------------------------------------------------------------
 -- Copyright (c) notice
@@ -40,8 +40,8 @@
 -- Revision Number	: 1.1
 -- Version			: 1.2
 -- Date				: 08/08/2008
--- Modifier			: Joï¿½o Paulo Fernandes Barbosa (jpfb@cin.ufpe.br)
--- Description		: Os sinais de entrada e saï¿½da passam a ser do tipo std_logic.
+-- Modifier			: João Paulo Fernandes Barbosa (jpfb@cin.ufpe.br)
+-- Description		: Os sinais de entrada e saída passam a ser do tipo std_logic.
 --------------------------------------------------------------------------------
 
 
@@ -55,8 +55,8 @@ ENTITY Registrador IS
 			Clk		: IN  STD_LOGIC;						-- Clock do registrador
 			Reset	: IN  STD_LOGIC;						-- Reinicializa o conteudo do registrador
 			Load	: IN  STD_LOGIC;						-- Carrega o registrador com o vetor Entrada
-			Entrada : IN  STD_LOGIC_vector (31 downto 0); 	-- Vetor de bits que possui a informaï¿½ï¿½o a ser carregada no registrador
-			Saida	: OUT STD_LOGIC_vector (31 downto 0)	-- Vetor de bits que possui a informaï¿½ï¿½o jï¿½ carregada no registrador
+			Entrada : IN  STD_LOGIC_vector (31 downto 0); 	-- Vetor de bits que possui a informação a ser carregada no registrador
+			Saida	: OUT STD_LOGIC_vector (31 downto 0)	-- Vetor de bits que possui a informação já carregada no registrador
 		);
 END Registrador;
 
@@ -71,7 +71,7 @@ ARCHITECTURE behavioral_arch OF Registrador IS
 			if(Reset = '1') then
 				Saida <= "00000000000000000000000000000000";
 
-------------------------------------------- Inï¿½cio do processo relacionado ao clock 
+------------------------------------------- Início do processo relacionado ao clock 
 			elsif (Clk = '1' and clk'event) then
 				if (Load = '1') then
 					Saida <= Entrada;
