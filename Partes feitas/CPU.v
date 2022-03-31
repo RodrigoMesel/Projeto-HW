@@ -12,6 +12,7 @@ module CPU (input clk, reset);
     wire [4:0] IRout3;
     wire [15:0] IRout4;
     wire [31:0] PCSourceResult;
+    wire [31:0] Imediato;
 
     wire [31:0] BRoutA;
     wire [31:0] BRoutB;
@@ -26,6 +27,8 @@ module CPU (input clk, reset);
     wire [31:0] MuxMemToRegOut;
     wire [4:0] IR_15_11 = IRout4[15:11];
     wire [4:0] MuxRegDstOut;
+    wire [31:0] MemDataRegisterOut;
+    wire [31:0] LoadOut;
 
     //ALU
     wire zero;
@@ -56,6 +59,8 @@ module CPU (input clk, reset);
     wire [2:0] MemToReg;
     wire [2:0] PCSource;
     wire PCWrite;
+    wire MemDataWrite;
+    wire LoudControl;
 
     muxpcsource muxpcsource(
     temp32, temp32, AluResult, temp32, temp32, temp32, PCSource, PCSourceResult
@@ -75,6 +80,10 @@ module CPU (input clk, reset);
 
     Instr_Reg IR(
         clk, reset, IRWrite, MemOut, IRout1, IRout2, IRout3, IRout4
+    );
+
+    signext16_32 imediato(
+        IRout4, Imediato
     );
 
     muxregdst regdst(
@@ -98,7 +107,7 @@ module CPU (input clk, reset);
     );
 
     muxalusrcB muxalusrcb(
-        BOut, 32'b00000000000000000000000000000100, temp32, temp32, temp32, AluSrcB, MuxResultB
+        BOut, 32'b00000000000000000000000000000100, Imediato, temp32, temp32, AluSrcB, MuxResultB
     );
 
     ula32 ALU(
@@ -110,12 +119,23 @@ module CPU (input clk, reset);
     );
 
     muxmemtoreg muxmemtoreg(
-        temp32, temp32, temp32, AluOutResult, temp32, temp32, temp32, 32'b00000000000000000000000011100011, MemToReg, MuxMemToRegOut
+        temp32, temp32, LoadOut, AluOutResult, temp32, temp32, temp32, 32'b00000000000000000000000011100011, MemToReg, MuxMemToRegOut
     );
 
+    Registrador MemDataRegister(
+        clk, reset, MemDataWrite, MemOut, MemDataRegisterOut
+    );
 
+    muxload Load(
+        temp32, temp32, MemDataRegisterOut, LoudControl, LoadOut
+    );
 
-
+    ControlUnit UnitOfControl(
+        clk, reset, O, IRout1, IRout4[5:0],
+        IorD, MemWR, IRWrite, RegDst, RegWR, WriteA, WriteB,
+        AluSrcA, AluSrcB, AluOperation, AluOutWrite, MemToReg, 
+        PCSource, PCWrite, zero, LT, ET, GT, neg
+    );
 
 
 endmodule

@@ -25,7 +25,6 @@ module ControlUnit (
     output reg LT;
     output reg ET;
     output reg GT;
-    output reg O;
     output reg neg; 
 
     );
