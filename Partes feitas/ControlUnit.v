@@ -1,7 +1,7 @@
 
 module ControlUnit (
     
-    input clk, reset,
+    input wire clk, reset,
     
     input wire O, OpCode404, DivZero,
 

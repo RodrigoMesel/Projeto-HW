@@ -1,8 +1,6 @@
 
 module CPU (input clk, reset);
 
-    wire [31:0] temp32;
-
     //Data Wires
     wire [31:0] PCOut;
     wire [31:0] EPCOut;
@@ -113,7 +111,6 @@ module CPU (input clk, reset);
             JumpFromInstruction, AOut5bits, MemDataRegisterOut5bits
     );
 
-
     Memoria mem(
         IorDOut, clk, MemWR, StoreOut, MemOut
     );
@@ -159,7 +156,7 @@ module CPU (input clk, reset);
     //MUXS
 
     muxpcsource muxpcsource(
-    temp32, AOut, AluResult, JumpAddress, AluOutResult, EPCOut, PCSource, PCSourceResult
+    MemOut, AOut, AluResult, JumpAddress, AluOutResult, EPCOut, PCSource, PCSourceResult
     );
 
     muxcausecontrol cc(
@@ -199,8 +196,6 @@ module CPU (input clk, reset);
         AOut5bits, 5'b10000, SHAMT, MemDataRegisterOut5bits, ShiftNControl, ShiftNControlOut 
     );
 
-    
-
 
     //Signal Extend
 
@@ -220,9 +215,6 @@ module CPU (input clk, reset);
         CauseControlOut, CauseControlOut32bits
     );
 
-    //signext8_32 memExtender(
-    //    MemOut, 
-    //);
 
     signext1_32 LTExtender(
         LT, LTExtended
