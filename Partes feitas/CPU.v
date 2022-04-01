@@ -129,7 +129,7 @@ module CPU (input clk, reset);
     );
 
     RegDesloc regDeslc(
-        clk, reset, ShiftControl, ShiftNControlOut, ShiftInputControlOut, 
+        clk, reset, ShiftControl, ShiftNControlOut, ShiftInputControlOut, RegDeslocOut
     );
 
     //Registradores
@@ -151,7 +151,7 @@ module CPU (input clk, reset);
     );
 
     Registrador MemDataRegister(
-        clk, reset, MemDataWrite, MemOut, MemDataRegisterOut, RegDeslocOut
+        clk, reset, MemDataWrite, MemOut, MemDataRegisterOut
     );
 
     //MUXS
