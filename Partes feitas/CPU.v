@@ -27,7 +27,7 @@ module CPU (input clk, reset);
     wire [31:0] BRoutA;
     wire [31:0] BRoutB;
     wire [31:0] AOut;
-    wire [4:0] AOut5bits; //*
+    wire [4:0] AOut5bits;
     wire [31:0] BOut;
     wire [31:0] MuxResultA;
     wire [31:0] MuxResultB;
@@ -35,6 +35,7 @@ module CPU (input clk, reset);
     wire [31:0] AluOutResult;
 
     wire [31:0] MemDataRegisterOut;
+    wire [4:0] MemDataRegisterOut5bits;
     wire [15:0] MemDataRegisterOutToLH;
     wire [31:0] MemDataRegisterOutToLHExtendido;
     wire [7:0] MemDataRegisterOutToLB; 
@@ -107,8 +108,8 @@ module CPU (input clk, reset);
     parameter ra = 5'b11111;
 
     variaveisMontador vM(
-        PCOut, Imediato, MemDataRegisterOut, RS, RT, PCAux, RD, SHAMT,
-        MemDataRegisterOutToLH, MemDataRegisterOutToLB, JumpFromInstruction
+        PCOut, Imediato, MemDataRegisterOut, RS, RT, AOut,
+        PCAux, RD, SHAMT, MemDataRegisterOutToLH, MemDataRegisterOutToLB, JumpFromInstruction, AOut5bits, MemDataRegisterOut5bits
     );
 
 
@@ -191,7 +192,7 @@ module CPU (input clk, reset);
     );
 
     muxshiftN sn(
-        temp4, 5'b10000, SHAMT, temp4, ShiftNControl, ShiftNControlOut 
+        AOut5bits, 5'b10000, SHAMT, MemDataRegisterOut5bits, ShiftNControl, ShiftNControlOut 
     );
 
     
