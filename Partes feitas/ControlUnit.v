@@ -24,7 +24,7 @@ module ControlUnit (
     output reg PCWrite,
     output reg EPCWrite,  
     output reg MemDataWrite,
-    output reg LoudControl,
+    output reg [1:0] LoadControl,
     output reg StoreControl,
     output reg MultOrDivLow,
     output reg MultOrDivHigh,
@@ -166,7 +166,7 @@ module ControlUnit (
                 PCWrite = 1'b0;
                 EPCWrite = 1'b0;  
                 MemDataWrite = 1'b0;
-                LoudControl = 1'b0;
+                LoadControl = 1'b0;
                 StoreControl = 1'b0;
                 MultOrDivLow = 1'b0;
                 MultOrDivHigh = 1'b0;
@@ -210,7 +210,7 @@ module ControlUnit (
                 PCWrite = 1'b0;
                 EPCWrite = 1'b0;  
                 MemDataWrite = 1'b0;
-                LoudControl = 1'b0;
+                LoadControl = 1'b0;
                 StoreControl = 1'b0;
                 MultOrDivLow = 1'b0;
                 MultOrDivHigh = 1'b0;
@@ -250,7 +250,7 @@ module ControlUnit (
                             PCWrite = 1'b0;
                             EPCWrite = 1'b0;  
                             MemDataWrite = 1'b0;
-                            LoudControl = 1'b0;
+                            LoadControl = 1'b0;
                             StoreControl = 1'b0;
                             MultOrDivLow = 1'b0;
                             MultOrDivHigh = 1'b0;
@@ -300,7 +300,7 @@ module ControlUnit (
                         PCWrite = 1'b0;
                         EPCWrite = 1'b0;  
                         MemDataWrite = 1'b0;
-                        LoudControl = 1'b0;
+                        LoadControl = 1'b0;
                         StoreControl = 1'b0;
                         MultOrDivLow = 1'b0;
                         MultOrDivHigh = 1'b0;
@@ -461,7 +461,7 @@ module ControlUnit (
                         PCWrite = 1'b0;
                         EPCWrite = 1'b0;  
                         MemDataWrite = 1'b0;
-                        LoudControl = 1'b0;
+                        LoadControl = 1'b0;
                         StoreControl = 1'b0;
                         MultOrDivLow = 1'b0;
                         MultOrDivHigh = 1'b0;
@@ -542,7 +542,7 @@ module ControlUnit (
                         PCWrite = 1'b0;
                         EPCWrite = 1'b0;  
                         MemDataWrite = 1'b0;
-                        LoudControl = 1'b0;
+                        LoadControl = 1'b0;
                         StoreControl = 1'b0;
                         MultOrDivLow = 1'b0;
                         MultOrDivHigh = 1'b0;
@@ -585,7 +585,7 @@ module ControlUnit (
                         PCWrite = 1'b0;
                         EPCWrite = 1'b0;  
                         MemDataWrite = 1'b0;
-                        LoudControl = 1'b0;
+                        LoadControl = 1'b0;
                         StoreControl = 1'b0;
                         MultOrDivLow = 1'b0;
                         MultOrDivHigh = 1'b0;
@@ -627,7 +627,7 @@ module ControlUnit (
                         PCWrite = 1'b0;
                         EPCWrite = 1'b0;  
                         MemDataWrite = 1'b0;
-                        LoudControl = 1'b0;
+                        LoadControl = 1'b0;
                         StoreControl = 1'b0;
                         MultOrDivLow = 1'b0;
                         MultOrDivHigh = 1'b0;

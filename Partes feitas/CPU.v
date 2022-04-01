@@ -9,6 +9,7 @@ module CPU (input clk, reset);
     wire [31:0] EPCOut;
     wire [3:0] PCAux;
     wire [7:0] CauseControlOut;
+    wire [31:0] CauseControlOut32bits;
     wire [31:0] IorDOut;
     wire [31:0] MemOut;
 
@@ -93,7 +94,7 @@ module CPU (input clk, reset);
     wire EPCWrite;  
     wire PCWrite;
     wire MemDataWrite;
-    wire LoudControl;
+    wire [1:0] LoadControl;
     wire StoreControl;
     wire MultOrDivLow;
     wire MultOrDivHigh;
@@ -160,18 +161,21 @@ module CPU (input clk, reset);
     muxpcsource muxpcsource(
     temp32, AOut, AluResult, JumpAddress, AluOutResult, EPCOut, PCSource, PCSourceResult
     );
-    
 
+    muxcausecontrol cc(
+        8'b11111101, 8'b11111110, 8'b11111111, CauseControl, CauseControlOut
+    );
+    
     muxiord iord(
-        PCOut, CauseControlOut, AOut, BOut, AluOutResult, IorD, IorDOut
+        PCOut, CauseControlOut32bits, AOut, BOut, AluOutResult, IorD, IorDOut
     );
 
     muxregdst regdst(
-        RT, IR_15_11, ra, sp, RegDst, MuxRegDstOut
+        RT, RD, ra, sp, RegDst, MuxRegDstOut
     );
 
     muxalusrcA muxalusrca(
-        PCOut, MemOut, AOut, sp, AluSrcA, MuxResultA
+        PCOut, MemOut, AOut, 32'b00000000000000000000000000011101, AluSrcA, MuxResultA
     );
 
     muxalusrcB muxalusrcb(
@@ -184,7 +188,7 @@ module CPU (input clk, reset);
     );
 
     muxload load(
-        MemDataRegisterOutToLHExtendido, MemDataRegisterOutToLBExtendido, MemDataRegisterOut, LoudControl, LoadOut
+        MemDataRegisterOutToLHExtendido, MemDataRegisterOutToLBExtendido, MemDataRegisterOut, LoadControl, LoadOut
     );
 
     muxShiftInput si(
@@ -210,6 +214,10 @@ module CPU (input clk, reset);
 
     signext8_32 loadBtExtender(
         MemDataRegisterOutToLB, MemDataRegisterOutToLBExtendido
+    );
+
+    signext8_32 CauseControlExtender(
+        CauseControlOut, CauseControlOut32bits
     );
 
     //signext8_32 memExtender(
@@ -243,7 +251,7 @@ module CPU (input clk, reset);
         IorD, CauseControl, MemWR, IRWrite, RegDst,
         MemToReg, RegWR, WriteA, WriteB, AluSrcA, AluSrcB,
         AluOperation, AluOutWrite, PCSource, PCWrite, EPCWrite,
-        MemDataWrite, LoudControl, StoreControl, 
+        MemDataWrite, LoadControl, StoreControl, 
         MultOrDivLow, MultOrDivHigh, LOWrite, HIWrite,
         ShiftInputControl, ShiftNControl, ShiftControl,
         zero, LT, ET, GT, neg, reset 
