@@ -384,8 +384,9 @@ module ControlUnit (
                                     ADDMFunct: begin
                                          state =  ADDM;
                                         end
-                                    end
                                 endcase
+                            end
+                                
                             ADDIop: begin
                                  state = ADDI;
                                 end
@@ -438,6 +439,7 @@ module ControlUnit (
                             JALop: begin
                                  state = JAL;
                                 end
+                            default: state = op404;
                         endcase
 
                     end
