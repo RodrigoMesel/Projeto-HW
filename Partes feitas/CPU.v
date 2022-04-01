@@ -49,7 +49,6 @@ module CPU (input clk, reset);
     wire [31:0] PCSourceResult;
 
     //Jump
-    wire [9:0] JumpAux;
     wire [25:0] JumpFromInstruction;
     wire [27:0] JumpShifted;
     wire [31:0] JumpAddress;
@@ -107,16 +106,10 @@ module CPU (input clk, reset);
     parameter sp = 5'b11101;
     parameter ra = 5'b11111;
 
-    initial begin
-        assign PCAux = PCOut[31:28]
-        assign IR_15_11 = Imediato[15:11];
-        assign RD = Imediato[15:11];
-        assign SHAMT = Imediato [10:6];
-        assign MemDataRegisterOutToLH = MemDataRegisterOut[15:0];
-        assign MemDataRegisterOutToLB = MemDataRegisterOut[7:0];
-        assign JumpAux = {RS,RT};
-        assign JumpFromInstruction = {JumpAux, Imediato};
-    end
+    variaveisMontador vM(
+        PCOut, Imediato, MemDataRegisterOut, RS, RT, PCAux, RD, SHAMT,
+        MemDataRegisterOutToLH, MemDataRegisterOutToLB, JumpFromInstruction
+    );
 
 
     Memoria mem(
@@ -238,7 +231,7 @@ module CPU (input clk, reset);
     );
 
     pcConcatenator pcConcatenator(
-        PCAux, JumpShifted, JumpAddress;
+        PCAux, JumpShifted, JumpAddress
     );
 
 

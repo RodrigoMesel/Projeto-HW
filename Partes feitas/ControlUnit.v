@@ -3,44 +3,42 @@ module ControlUnit (
     
     input clk, reset,
     
-    input wire O, OpCode404, DivZero;
+    input wire O, OpCode404, DivZero,
 
     input wire [5:0] OpCode, Funct,
 
-    output reg [2:0] IorD;
-    output reg [1:0] CauseControl;
-    output reg MemWR;
-    output reg IRWrite;
-    output reg [1:0] RegDst;
-    output reg [2:0] MemToReg;
-    output reg RegWR;
-    output reg WriteA;
-    output reg WriteB;
-    output reg [1:0] AluSrcA;
-    output reg [2:0] AluSrcB;
-    output reg [2:0] AluOperation;
-    output reg AluOutWrite;
-    output reg [2:0] PCSource;
-    output reg PCWrite;
-    output reg EPCWrite;  
-    output reg MemDataWrite;
-    output reg LoudControl;
-    output reg StoreControl;
-    output reg MultOrDivLow;
-    output reg MultOrDivHigh;
-    output reg LOWrite;
-    output reg HIWrite;
-    output reg [1:0] ShiftInputControl;
-    output reg [1:0] ShiftNControl;
-    output reg [2:0] ShiftControl;
+    output reg [2:0] IorD,
+    output reg [1:0] CauseControl,
+    output reg MemWR,
+    output reg IRWrite,
+    output reg [1:0] RegDst,
+    output reg [2:0] MemToReg,
+    output reg RegWR,
+    output reg WriteA,
+    output reg WriteB,
+    output reg [1:0] AluSrcA,
+    output reg [2:0] AluSrcB,
+    output reg [2:0] AluOperation,
+    output reg AluOutWrite,
+    output reg [2:0] PCSource,
+    output reg PCWrite,
+    output reg EPCWrite,  
+    output reg MemDataWrite,
+    output reg LoudControl,
+    output reg StoreControl,
+    output reg MultOrDivLow,
+    output reg MultOrDivHigh,
+    output reg LOWrite,
+    output reg HIWrite,
+    output reg [1:0] ShiftInputControl,
+    output reg [1:0] ShiftNControl,
+    output reg [2:0] ShiftControl,
     output reg zero,
     output reg LT,
     output reg ET,
     output reg GT,
     output reg neg,
-    output reg reset_out,
-
-
+    output reg reset_out
     );
 
     //Variáveis
@@ -55,7 +53,7 @@ module ControlUnit (
     parameter decode = 6'b000010;
     parameter op404 = 6'b000011;
     parameter overflow = 6'b000100;
-    parameter DivZero; = 6'b000101;
+    parameter ZeroDiv_State = 6'b000101;
 
     parameter ADD = 6'b000110;
     parameter AND = 6'b000111;
@@ -386,8 +384,8 @@ module ControlUnit (
                                     ADDMFunct: begin
                                          state =  ADDM;
                                         end
-                            end
-                        endcase
+                                    //end
+                                endcase
                             ADDIop: begin
                                  state = ADDI;
                                 end
@@ -530,7 +528,7 @@ module ControlUnit (
 
                 RESET_State: begin
 
-                    if(counter = 5'b00000)begin
+                    if(counter == 5'b00000)begin
 
                             state = RESET_State; //*
 
