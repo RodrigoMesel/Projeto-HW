@@ -2,7 +2,6 @@
 module CPU (input clk, reset);
 
     wire [31:0] temp32;
-    wire [4:0] temp4;
 
     //Data Wires
     wire [31:0] PCOut;
@@ -110,7 +109,8 @@ module CPU (input clk, reset);
 
     variaveisMontador vM(
         PCOut, Imediato, MemDataRegisterOut, RS, RT, AOut,
-        PCAux, RD, SHAMT, MemDataRegisterOutToLH, MemDataRegisterOutToLB, JumpFromInstruction, AOut5bits, MemDataRegisterOut5bits
+        PCAux, RD, SHAMT, MemDataRegisterOutToLH, MemDataRegisterOutToLB,
+            JumpFromInstruction, AOut5bits, MemDataRegisterOut5bits
     );
 
 
