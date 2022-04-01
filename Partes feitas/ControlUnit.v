@@ -384,7 +384,7 @@ module ControlUnit (
                                     ADDMFunct: begin
                                          state =  ADDM;
                                         end
-                                    //end
+                                    end
                                 endcase
                             ADDIop: begin
                                  state = ADDI;
