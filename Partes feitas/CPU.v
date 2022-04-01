@@ -2,41 +2,86 @@
 module CPU (input clk, reset);
 
     wire [31:0] temp32;
+    wire [4:0] temp4;
 
     //Data Wires
     wire [31:0] PCOut;
+    wire [31:0] EPCOut;
+    wire [3:0] PCAux;
     wire [7:0] CauseControlOut;
     wire [31:0] IorDOut;
     wire [31:0] MemOut;
+
     wire [5:0] OpCode;
+    wire Op404;
     wire [4:0] RS;
     wire [4:0] RT;
+    wire [4:0] RD;
+    wire [4:0] SHAMT;
     wire [15:0] Imediato;
-    wire [31:0] PCSourceResult;
     wire [31:0] ImediatoExtendido32bits;
+    wire [31:0] ImediatoToBrench;
+    wire [4:0] MuxRegDstOut;
+    wire [31:0] MuxMemToRegOut;
+
     wire [31:0] BRoutA;
     wire [31:0] BRoutB;
     wire [31:0] AOut;
+    wire [4:0] AOut5bits; //*
     wire [31:0] BOut;
     wire [31:0] MuxResultA;
     wire [31:0] MuxResultB;
-    wire [31:0] AluOutResult;
-    wire [31:0] MuxMemToRegOut;
-    wire [4:0] IR_15_11 = Imediato[15:11];
-    wire [4:0] MuxRegDstOut;
-    wire [31:0] MemDataRegisterOut;
-    wire [31:0] LoadOut;
     wire [31:0] AluResult;
+    wire [31:0] AluOutResult;
+
+    wire [31:0] MemDataRegisterOut;
+    wire [15:0] MemDataRegisterOutToLH;
+    wire [31:0] MemDataRegisterOutToLHExtendido;
+    wire [7:0] MemDataRegisterOutToLB; 
+    wire [31:0] MemDataRegisterOutToLBExtendido; 
+    wire [31:0] LoadOut;
+    wire [31:0] StoreOut;
+
+    wire [31:0] ShiftInputControlOut;
+    wire [4:0] ShiftNControlOut;
+    wire [31:0] RegDeslocOut;
+
+    wire [31:0] PCSourceResult;
+
+    //Jump
+    wire [9:0] JumpAux;
+    wire [25:0] JumpFromInstruction;
+    wire [27:0] JumpShifted;
+    wire [31:0] JumpAddress;
+
+
+    //Multiplication and divison
+    wire [31:0] MultHiOut;
+    wire [31:0] MultLoOut;
+    wire [31:0] DivHiOut;
+    wire [31:0] DivLoOut;
+    wire [31:0] MultOrDivHighOut;
+    wire [31:0] MultOrDivLowOut;
+    wire [31:0] HighOut;
+    wire [31:0] LowOut;
+    wire DivZero;
 
     //ALU
-
-
+    wire zero;
+    wire LT;
+    wire [31:0] LTExtended;
+    wire ET;
+    wire GT;
+    wire O;
+    wire neg;
 
     //Sinais de controle
     wire [2:0] IorD;
+    wire [1:0] CauseControl;
     wire MemWR;
     wire IRWrite;
     wire [1:0] RegDst;
+    wire [2:0] MemToReg;
     wire RegWR;
     wire WriteA;
     wire WriteB;
@@ -44,37 +89,35 @@ module CPU (input clk, reset);
     wire [2:0] AluSrcB;
     wire [2:0] AluOperation;
     wire AluOutWrite;
-    wire [2:0] MemToReg;
     wire [2:0] PCSource;
+    wire EPCWrite;  
     wire PCWrite;
     wire MemDataWrite;
     wire LoudControl;
-    wire zero;
-    wire LT;
-    wire ET;
-    wire GT;
-    wire O;
-    wire neg; 
-
-    //Extras
-    
-    wire [31:0] StoreOut; // IMPLEMENTAR
+    wire StoreControl;
+    wire MultOrDivLow;
+    wire MultOrDivHigh;
+    wire LOWrite;
+    wire HIWrite;
+    wire [1:0] ShiftInputControl;
+    wire [1:0] ShiftNControl;
+    wire [2:0] ShiftControl;
+ 
 
     parameter sp = 5'b11101;
     parameter ra = 5'b11111;
 
+    initial begin
+        assign PCAux = PCOut[31:28]
+        assign IR_15_11 = Imediato[15:11];
+        assign RD = Imediato[15:11];
+        assign SHAMT = Imediato [10:6];
+        assign MemDataRegisterOutToLH = MemDataRegisterOut[15:0];
+        assign MemDataRegisterOutToLB = MemDataRegisterOut[7:0];
+        assign JumpAux = {RS,RT};
+        assign JumpFromInstruction = {JumpAux, Imediato};
+    end
 
-    muxpcsource muxpcsource(
-    temp32, temp32, AluResult, temp32, temp32, temp32, PCSource, PCSourceResult
-    );
-    
-    Registrador PC(
-        clk, reset, PCWrite, PCSourceResult, PCOut
-    );
-
-    muxiord iord(
-        PCOut, CauseControlOut, AOut, BOut, AluOutResult, IorD, IorDOut
-    );
 
     Memoria mem(
         IorDOut, clk, MemWR, StoreOut, MemOut
@@ -84,17 +127,22 @@ module CPU (input clk, reset);
         clk, reset, IRWrite, MemOut, OpCode, RS, RT, Imediato
     );
 
-    signext16_32 imediatoExtender(
-        Imediato, ImediatoExtendido32bits
-
-    );
-
-    muxregdst regdst(
-        RT, IR_15_11, ra, sp, RegDst, MuxRegDstOut
-    );
-
     Banco_reg BR(
         clk, reset, RegWR, RS, RT, MuxRegDstOut, MuxMemToRegOut, BRoutA, BRoutB
+    );
+
+    ula32 ALU(
+        MuxResultA, MuxResultB, AluOperation, AluResult, O, neg, zero, ET, GT, LT 
+    );
+
+    RegDesloc regDeslc(
+        clk, reset, ShiftControl, ShiftNControlOut, ShiftInputControlOut, 
+    );
+
+    //Registradores
+
+    Registrador PC(
+        clk, reset, PCWrite, PCSourceResult, PCOut
     );
 
     Registrador A(
@@ -105,40 +153,106 @@ module CPU (input clk, reset);
         clk, reset, WriteB, BRoutB, BOut
     );
 
-    muxalusrcA muxalusrca(
-        PCOut, temp32, AOut, sp, AluSrcA, MuxResultA
-    );
-
-    muxalusrcB muxalusrcb(
-        BOut, 32'b00000000000000000000000000000100, ImediatoExtendido32bits
-, temp32, temp32, AluSrcB, MuxResultB
-    );
-
-    ula32 ALU(
-        MuxResultA, MuxResultB, AluOperation, AluResult, O, neg, zero, ET, GT, LT 
-    );
-
     Registrador AluOut(
         clk, reset, AluOutWrite, AluResult, AluOutResult
     );
 
-    muxmemtoreg muxmemtoreg(
-        temp32, temp32, LoadOut, AluOutResult, temp32, temp32, temp32, 32'b00000000000000000000000011100011, MemToReg, MuxMemToRegOut
-    );
-
     Registrador MemDataRegister(
-        clk, reset, MemDataWrite, MemOut, MemDataRegisterOut
+        clk, reset, MemDataWrite, MemOut, MemDataRegisterOut, RegDeslocOut
     );
 
-    muxload Load(
-        temp32, temp32, MemDataRegisterOut, LoudControl, LoadOut
+    //MUXS
+
+    muxpcsource muxpcsource(
+    temp32, AOut, AluResult, JumpAddress, AluOutResult, EPCOut, PCSource, PCSourceResult
     );
+    
+
+    muxiord iord(
+        PCOut, CauseControlOut, AOut, BOut, AluOutResult, IorD, IorDOut
+    );
+
+    muxregdst regdst(
+        RT, IR_15_11, ra, sp, RegDst, MuxRegDstOut
+    );
+
+    muxalusrcA muxalusrca(
+        PCOut, MemOut, AOut, sp, AluSrcA, MuxResultA
+    );
+
+    muxalusrcB muxalusrcb(
+        BOut, 32'b00000000000000000000000000000100, ImediatoExtendido32bits,
+        MemDataRegisterOut, ImediatoToBrench, AluSrcB, MuxResultB
+    );
+
+    muxmemtoreg muxmemtoreg(
+        HighOut, LowOut, LoadOut, AluOutResult, LTExtended, RegDeslocOut, ImediatoExtendido32bits, 32'b00000000000000000000000011100011, MemToReg, MuxMemToRegOut
+    );
+
+    muxload load(
+        MemDataRegisterOutToLHExtendido, MemDataRegisterOutToLBExtendido, MemDataRegisterOut, LoudControl, LoadOut
+    );
+
+    muxShiftInput si(
+        AOut, ImediatoExtendido32bits, BOut, ShiftInputControl, ShiftInputControlOut
+    );
+
+    muxshiftN sn(
+        temp4, 5'b10000, SHAMT, temp4, ShiftNControl, ShiftNControlOut 
+    );
+
+    
+
+
+    //Signal Extend
+
+    signext16_32 imediatoExtender(
+        Imediato, ImediatoExtendido32bits
+    );
+
+    signext16_32 loadHfExtender(
+        MemDataRegisterOutToLH, MemDataRegisterOutToLHExtendido
+    );
+
+    signext8_32 loadBtExtender(
+        MemDataRegisterOutToLB, MemDataRegisterOutToLBExtendido
+    );
+
+    //signext8_32 memExtender(
+    //    MemOut, 
+    //);
+
+    signext1_32 LTExtender(
+        LT, LTExtended
+    );
+
+
+    //Shift Left 2
+
+    shiftleft2_32_32 imediatoShifter(
+        ImediatoExtendido32bits, ImediatoToBrench
+    );
+
+    shiftleft2_26_28 jumpShifter(
+        JumpFromInstruction, JumpShifted
+    );
+
+    pcConcatenator pcConcatenator(
+        PCAux, JumpShifted, JumpAddress;
+    );
+
+
+    //Unidade de controle
 
     ControlUnit UnitOfControl(
-        clk, reset, O, OpCode, Imediato[5:0],
-        IorD, MemWR, IRWrite, RegDst, RegWR, WriteA, WriteB,
-        AluSrcA, AluSrcB, AluOperation, AluOutWrite, MemToReg, 
-        PCSource, PCWrite, zero, LT, ET, GT, neg, reset
+        clk, reset, O, Op404, DivZero, OpCode, Imediato[5:0],
+        IorD, CauseControl, MemWR, IRWrite, RegDst,
+        MemToReg, RegWR, WriteA, WriteB, AluSrcA, AluSrcB,
+        AluOperation, AluOutWrite, PCSource, PCWrite, EPCWrite,
+        MemDataWrite, LoudControl, StoreControl, 
+        MultOrDivLow, MultOrDivHigh, LOWrite, HIWrite,
+        ShiftInputControl, ShiftNControl, ShiftControl,
+        zero, LT, ET, GT, neg, reset 
     );
 
 
