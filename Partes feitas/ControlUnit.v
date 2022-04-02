@@ -494,6 +494,9 @@ module ControlUnit (
                         CauseControl = 2'b00;
                         MemWR = 1'b0;
                         IRWrite = 1'b0;
+                        RegDst = 2'b00;
+                        MemToReg = 3'b000;
+                        RegWR = 1'b0;
                         WriteA = 1'b0;
                         WriteB = 1'b0;
                         PCSource = 3'b000;
@@ -515,10 +518,6 @@ module ControlUnit (
                         GT = 1'b0;
                         neg = 1'b0;
 
-                        MemToReg = 3'b000;
-                        RegDst = 2'b00;
-                        RegWR = 1'b0;
-
                         reset_out = 1'b0;
 
                         AluSrcA = 10;
@@ -537,8 +536,15 @@ module ControlUnit (
                             CauseControl = 2'b00;
                             MemWR = 1'b0;
                             IRWrite = 1'b0;
+                            RegDst = 2'b00;
+                            MemToReg = 3'b000;
+                            RegWR = 1'b0;
                             WriteA = 1'b0;
                             WriteB = 1'b0;
+                            AluSrcA = 2'b00;
+                            AluSrcB = 3'b000;
+                            AluOperation = 3'b000;
+                            AluOutWrite = 1'b0;
                             PCSource = 3'b000;
                             PCWrite = 1'b0;
                             EPCWrite = 1'b0;  
@@ -557,10 +563,6 @@ module ControlUnit (
                             ET = 1'b0;
                             GT = 1'b0;
                             neg = 1'b0;
-
-                            MemToReg = 3'b000;
-                            RegDst = 2'b00;
-                            RegWR = 1'b0;
 
                             reset_out = 1'b0;
 
@@ -591,8 +593,15 @@ module ControlUnit (
                                 CauseControl = 2'b00;
                                 MemWR = 1'b0;
                                 IRWrite = 1'b0;
+                                RegDst = 2'b00;
+                                MemToReg = 3'b000;
+                                RegWR = 1'b0;
                                 WriteA = 1'b0;
                                 WriteB = 1'b0;
+                                AluSrcA = 2'b00;
+                                AluSrcB = 3'b000;
+                                AluOperation = 3'b000;
+                                AluOutWrite = 1'b0;
                                 PCSource = 3'b000;
                                 PCWrite = 1'b0;
                                 EPCWrite = 1'b0;  
@@ -611,10 +620,6 @@ module ControlUnit (
                                 ET = 1'b0;
                                 GT = 1'b0;
                                 neg = 1'b0;
-
-                                MemToReg = 3'b000;
-                                RegDst = 2'b00;
-                                RegWR = 1'b0;
 
                                 reset_out = 1'b0;
                                 counter = 5'b00000;
@@ -638,18 +643,15 @@ module ControlUnit (
 
                 ADDI: begin
 
-                    
-
-                end
-
-                ADDIU: begin
-                    
                     if(counter == 5'b00000)begin 
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
                         MemWR = 1'b0;
                         IRWrite = 1'b0;
+                        RegDst = 2'b00;
+                        MemToReg = 3'b000;
+                        RegWR = 1'b0;
                         WriteA = 1'b0;
                         WriteB = 1'b0;
                         PCSource = 3'b000;
@@ -671,11 +673,160 @@ module ControlUnit (
                         GT = 1'b0;
                         neg = 1'b0;
 
-                        MemToReg = 3'b000;
-                        RegDst = 2'b00;
-                        RegWR = 1'b0;
-
                         reset_out = 1'b0;
+
+                        AluSrcA = 10;
+                        AluSrcB = 010;
+                        AluOperation = 001;
+                        AluOutWrite = 1;
+
+                        counter = counter + 1;
+
+
+                    end else if (counter == 5'b00001) begin
+
+                        if(O == 1) begin
+
+                                IorD = 3'b000;
+                                CauseControl = 2'b00;
+                                MemWR = 1'b0;
+                                IRWrite = 1'b0;
+                                RegDst = 2'b00;
+                                MemToReg = 3'b000;
+                                RegWR = 1'b0;
+                                WriteA = 1'b0;
+                                WriteB = 1'b0;
+                                AluSrcA = 2'b00;
+                                AluSrcB = 3'b000;
+                                AluOperation = 3'b000;
+                                AluOutWrite = 1'b0;
+                                PCSource = 3'b000;
+                                PCWrite = 1'b0;
+                                EPCWrite = 1'b0;  
+                                MemDataWrite = 1'b0;
+                                LoadControl = 1'b0;
+                                StoreControl = 1'b0;
+                                MultOrDivLow = 1'b0;
+                                MultOrDivHigh = 1'b0;
+                                LOWrite = 1'b0;
+                                HIWrite = 1'b0;
+                                ShiftInputControl = 2'b00;
+                                ShiftNControl = 2'b00;
+                                ShiftControl = 3'b000;
+                                zero = 1'b0;
+                                LT = 1'b0;
+                                ET = 1'b0;
+                                GT = 1'b0;
+                                neg = 1'b0;
+
+                                reset_out = 1'b0;
+                                counter = 5'b00000;
+                                state = overflow;
+
+                        end else begin
+
+                        MemToReg = 3'b011;
+                        RegDst = 2'b00;
+                        RegWR = 1'b1;
+
+                        AluSrcA = 00;
+                        AluSrcB = 000;
+                        AluOperation = 000;
+                        AluOutWrite = 0;
+
+                        counter = counter + 1;
+                        end
+
+                    end else if (counter == 5'b00010) begin
+
+                        if (O == 1) begin
+
+                                IorD = 3'b000;
+                                CauseControl = 2'b00;
+                                MemWR = 1'b0;
+                                IRWrite = 1'b0;
+                                RegDst = 2'b00;
+                                MemToReg = 3'b000;
+                                RegWR = 1'b0;
+                                WriteA = 1'b0;
+                                WriteB = 1'b0;
+                                AluSrcA = 2'b00;
+                                AluSrcB = 3'b000;
+                                AluOperation = 3'b000;
+                                AluOutWrite = 1'b0;
+                                PCSource = 3'b000;
+                                PCWrite = 1'b0;
+                                EPCWrite = 1'b0;  
+                                MemDataWrite = 1'b0;
+                                LoadControl = 1'b0;
+                                StoreControl = 1'b0;
+                                MultOrDivLow = 1'b0;
+                                MultOrDivHigh = 1'b0;
+                                LOWrite = 1'b0;
+                                HIWrite = 1'b0;
+                                ShiftInputControl = 2'b00;
+                                ShiftNControl = 2'b00;
+                                ShiftControl = 3'b000;
+                                zero = 1'b0;
+                                LT = 1'b0;
+                                ET = 1'b0;
+                                GT = 1'b0;
+                                neg = 1'b0;
+
+                                reset_out = 1'b0;
+                                counter = 5'b00000;
+                                state = overflow;
+
+                        end else begin
+                        
+                        state = fetch;
+
+                        MemToReg = 3'b011;
+                        RegDst = 2'b00;
+                        RegWR = 1'b1;
+
+                        counter = 5'b00000;
+
+                        end                        
+
+                    end
+
+
+                end
+
+                ADDIU: begin
+                    
+                    if(counter == 5'b00000)begin 
+
+                        IorD = 3'b000;
+                        CauseControl = 2'b00;
+                        MemWR = 1'b0;
+                        IRWrite = 1'b0;
+                        RegDst = 2'b00;
+                        MemToReg = 3'b000;
+                        RegWR = 1'b0;
+                        WriteA = 1'b0;
+                        WriteB = 1'b0;
+                        PCSource = 3'b000;
+                        PCWrite = 1'b0;
+                        EPCWrite = 1'b0;  
+                        MemDataWrite = 1'b0;
+                        LoadControl = 1'b0;
+                        StoreControl = 1'b0;
+                        MultOrDivLow = 1'b0;
+                        MultOrDivHigh = 1'b0;
+                        LOWrite = 1'b0;
+                        HIWrite = 1'b0;
+                        ShiftInputControl = 2'b00;
+                        ShiftNControl = 2'b00;
+                        ShiftControl = 3'b000;
+                        zero = 1'b0;
+                        LT = 1'b0;
+                        ET = 1'b0;
+                        GT = 1'b0;
+                        neg = 1'b0;
+
+                        reset_out = 1'b1;
 
                         AluSrcA = 10;
                         AluSrcB = 010;
@@ -719,6 +870,9 @@ module ControlUnit (
                         CauseControl = 2'b00;
                         MemWR = 1'b0;
                         IRWrite = 1'b0;
+                        RegDst = 2'b00;
+                        MemToReg = 3'b000;
+                        RegWR = 1'b0;
                         WriteA = 1'b0;
                         WriteB = 1'b0;
                         PCSource = 3'b000;
@@ -739,10 +893,6 @@ module ControlUnit (
                         ET = 1'b0;
                         GT = 1'b0;
                         neg = 1'b0;
-
-                        MemToReg = 3'b000;
-                        RegDst = 2'b00;
-                        RegWR = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -788,6 +938,9 @@ module ControlUnit (
                         CauseControl = 2'b00;
                         MemWR = 1'b0;
                         IRWrite = 1'b0;
+                        RegDst = 2'b00;
+                        MemToReg = 3'b000;
+                        RegWR = 1'b0;
                         WriteA = 1'b0;
                         WriteB = 1'b0;
                         PCSource = 3'b000;
@@ -809,10 +962,6 @@ module ControlUnit (
                         GT = 1'b0;
                         neg = 1'b0;
 
-                        MemToReg = 3'b000;
-                        RegDst = 2'b00;
-                        RegWR = 1'b0;
-
                         reset_out = 1'b0;
 
                         AluSrcA = 10;
@@ -831,8 +980,15 @@ module ControlUnit (
                             CauseControl = 2'b00;
                             MemWR = 1'b0;
                             IRWrite = 1'b0;
+                            RegDst = 2'b00;
+                            MemToReg = 3'b000;
+                            RegWR = 1'b0;
                             WriteA = 1'b0;
                             WriteB = 1'b0;
+                            AluSrcA = 2'b00;
+                            AluSrcB = 3'b000;
+                            AluOperation = 3'b000;
+                            AluOutWrite = 1'b0;
                             PCSource = 3'b000;
                             PCWrite = 1'b0;
                             EPCWrite = 1'b0;  
@@ -851,10 +1007,6 @@ module ControlUnit (
                             ET = 1'b0;
                             GT = 1'b0;
                             neg = 1'b0;
-
-                            MemToReg = 3'b000;
-                            RegDst = 2'b00;
-                            RegWR = 1'b0;
 
                             reset_out = 1'b0;
 
@@ -884,8 +1036,15 @@ module ControlUnit (
                                 CauseControl = 2'b00;
                                 MemWR = 1'b0;
                                 IRWrite = 1'b0;
+                                RegDst = 2'b00;
+                                MemToReg = 3'b000;
+                                RegWR = 1'b0;
                                 WriteA = 1'b0;
                                 WriteB = 1'b0;
+                                AluSrcA = 2'b00;
+                                AluSrcB = 3'b000;
+                                AluOperation = 3'b000;
+                                AluOutWrite = 1'b0;
                                 PCSource = 3'b000;
                                 PCWrite = 1'b0;
                                 EPCWrite = 1'b0;  
@@ -904,10 +1063,6 @@ module ControlUnit (
                                 ET = 1'b0;
                                 GT = 1'b0;
                                 neg = 1'b0;
-
-                                MemToReg = 3'b000;
-                                RegDst = 2'b00;
-                                RegWR = 1'b0;
 
                                 reset_out = 1'b0;
                                 counter = 5'b00000;
@@ -937,9 +1092,11 @@ module ControlUnit (
 
                             //Setando todos os outputs para 0
                             IorD = 3'b000;
+                            CauseControl = 2'b00;
                             MemWR = 1'b0;
                             IRWrite = 1'b0;
                             RegDst = 2'b00;
+                            MemToReg = 3'b000;
                             RegWR = 1'b0;
                             WriteA = 1'b0;
                             WriteB = 1'b0;
@@ -947,15 +1104,140 @@ module ControlUnit (
                             AluSrcB = 3'b000;
                             AluOperation = 3'b000;
                             AluOutWrite = 1'b0;
-                            MemToReg = 3'b000;
                             PCSource = 3'b000;
                             PCWrite = 1'b0;
+                            EPCWrite = 1'b0;  
+                            MemDataWrite = 1'b0;
+                            LoadControl = 1'b0;
+                            StoreControl = 1'b0;
+                            MultOrDivLow = 1'b0;
+                            MultOrDivHigh = 1'b0;
+                            LOWrite = 1'b0;
+                            HIWrite = 1'b0;
+                            ShiftInputControl = 2'b00;
+                            ShiftNControl = 2'b00;
+                            ShiftControl = 3'b000;
                             zero = 1'b0;
                             LT = 1'b0;
                             ET = 1'b0;
                             GT = 1'b0;
                             neg = 1'b0;
+
                             reset_out = 1'b1;
+
+                    end
+
+                end
+
+                overflow : begin
+
+                    if(counter != 5'b00010) begin
+
+                        IRWrite = 1'b0;
+                        WriteA = 1'b0;
+                        WriteB = 1'b0;
+                        PCSource = 3'b000;
+                        PCWrite = 1'b0;
+                        EPCWrite = 1'b0;  
+                        MemDataWrite = 1'b0;
+                        LoadControl = 1'b0;
+                        StoreControl = 1'b0;
+                        MultOrDivLow = 1'b0;
+                        MultOrDivHigh = 1'b0;
+                        LOWrite = 1'b0;
+                        HIWrite = 1'b0;
+                        ShiftInputControl = 2'b00;
+                        ShiftNControl = 2'b00;
+                        ShiftControl = 3'b000;
+                        zero = 1'b0;
+                        LT = 1'b0;
+                        ET = 1'b0;
+                        GT = 1'b0;
+                        neg = 1'b0;
+
+                        MemToReg = 3'b000;
+                        RegDst = 2'b00;
+                        RegWR = 1'b0;
+                        reset_out = 1'b0;
+
+                        CauseControl = 2'b01;
+                        IorD = 3'b001;
+                        MemWR = 1'b0;
+                        AluSrcA = 2'b00;
+                        AluSrcB = 3'b001;
+                        AluOperation = 3'b010;
+
+                        counter = counter + 1;
+
+                    end else begin
+
+                        AluSrcA = 2'b00;
+                        AluSrcB = 3'b000;
+                        AluOperation = 3'b000;
+
+                        EPCWrite = 1'b1;
+                        PCSource = 3'b000;
+                        PCWrite = 1'b1;
+
+                        state = fetch;
+                        counter = 5'b00000;
+
+                    end
+
+
+                end
+
+                op404 : begin
+
+                    if(counter != 5'b00010)begin
+
+                        IRWrite = 1'b0;
+                        RegDst = 2'b00;
+                        MemToReg = 3'b000;
+                        RegWR = 1'b0;
+                        WriteA = 1'b0;
+                        WriteB = 1'b0;
+                        AluOutWrite = 1'b0;
+                        PCSource = 3'b000;
+                        PCWrite = 1'b0;
+                        EPCWrite = 1'b0;  
+                        MemDataWrite = 1'b0;
+                        LoadControl = 1'b0;
+                        StoreControl = 1'b0;
+                        MultOrDivLow = 1'b0;
+                        MultOrDivHigh = 1'b0;
+                        LOWrite = 1'b0;
+                        HIWrite = 1'b0;
+                        ShiftInputControl = 2'b00;
+                        ShiftNControl = 2'b00;
+                        ShiftControl = 3'b000;
+                        zero = 1'b0;
+                        LT = 1'b0;
+                        ET = 1'b0;
+                        GT = 1'b0;
+                        neg = 1'b0;
+                        reset_out = 1'b0;
+
+                        CauseControl = 2'b00;
+                        IorD = 3'b001;
+                        MemWR = 1'b0;
+                        AluSrcA = 2'b00;
+                        AluSrcB = 3'b001;
+                        AluOperation = 3'b010;
+
+                        counter = counter + 1;
+
+                    end else begin
+
+                        AluSrcB = 3'b000;
+                        AluOperation = 3'b000;
+
+                        EPCWrite = 1'b1;
+                        PCSource = 3'b000;
+                        PCWrite = 1'b1;
+
+                        state = fetch;
+                        counter = 5'b00000;
 
                     end
 

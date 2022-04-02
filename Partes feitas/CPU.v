@@ -153,7 +153,9 @@ module CPU (input clk, reset);
         clk, reset, MemDataWrite, MemOut, MemDataRegisterOut
     );
 
-    //Declarar o EPC
+    Registrador EPC(
+        clk, reset, EPCWrite, AluResult, EPCOut
+    );
 
     //MUXS
 
