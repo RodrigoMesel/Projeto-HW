@@ -2240,6 +2240,116 @@ module ControlUnit (
 
                     end                    
 
+                end
+
+                SLTI: begin
+                    if(counter == 5'b00000)begin
+
+                        IRWrite = 1'b0; 
+                        RegDst = 2'b00;
+                        MemToReg = 3'b000;
+                        RegWR = 1'b0;
+                        WriteA = 1'b0;
+                        WriteB = 1'b0;
+                        AluOutWrite = 1'b0;
+                        PCSource = 3'b000;
+                        PCWrite = 1'b0;
+                        EPCWrite = 1'b0;  
+                        MemDataWrite = 1'b0;
+                        LoadControl = 1'b0;
+                        StoreControl = 1'b0;
+                        MultOrDivLow = 1'b0;
+                        MultOrDivHigh = 1'b0;
+                        LOWrite = 1'b0;
+                        HIWrite = 1'b0;
+                        CauseControl = 2'b00;
+                        IorD = 3'b000;
+                        MemWR = 1'b0;
+                        zero = 1'b0;
+                        LT = 1'b0;
+                        ET = 1'b0;
+                        GT = 1'b0;
+                        neg = 1'b0;
+                        reset_out = 1'b0;
+                        ShiftNControl = 2'b00;
+                        ShiftControl = 3'b000;
+                        ShiftInputControl = 2'b00;
+
+                        AluSrcA = 2'b10;
+                        AluSrcB = 3'b010;
+                        AluOperation = 3'b111;
+                        LT = 1'b1;
+
+                        counter = counter + 1;
+
+                    end else if (counter == 5'b00001) begin
+                        
+                        state = fetch;
+
+                        MemToReg = 3'b100;
+                        RegDst = 2'b00;
+                        RegWR = 1'b1;
+                        
+                        
+                        counter = 5'b00000;
+
+                    end
+                end
+
+                SLT: begin 
+
+                    if(counter == 5'b00000)begin
+
+                        IRWrite = 1'b0; 
+                        RegDst = 2'b00;
+                        MemToReg = 3'b000;
+                        RegWR = 1'b0;
+                        WriteA = 1'b0;
+                        WriteB = 1'b0;
+                        AluOutWrite = 1'b0;
+                        PCSource = 3'b000;
+                        PCWrite = 1'b0;
+                        EPCWrite = 1'b0;  
+                        MemDataWrite = 1'b0;
+                        LoadControl = 1'b0;
+                        StoreControl = 1'b0;
+                        MultOrDivLow = 1'b0;
+                        MultOrDivHigh = 1'b0;
+                        LOWrite = 1'b0;
+                        HIWrite = 1'b0;
+                        CauseControl = 2'b00;
+                        IorD = 3'b000;
+                        MemWR = 1'b0;
+                        zero = 1'b0;
+                        LT = 1'b0;
+                        ET = 1'b0;
+                        GT = 1'b0;
+                        neg = 1'b0;
+                        reset_out = 1'b0;
+                        ShiftNControl = 2'b00;
+                        ShiftControl = 3'b000;
+                        ShiftInputControl = 2'b00;
+
+                        AluSrcA = 2'b10;
+                        AluSrcB = 3'b000;
+                        AluOperation = 3'b111;
+                        LT = 1'b1;
+
+                        counter = counter + 1;
+
+                    end else if (counter == 5'b00001) begin 
+
+                        state = fetch;
+
+                        MemToReg = 3'b100;
+                        RegDst = 2'b01;
+                        RegWR = 1'b1;
+                        
+                        
+                        counter = 5'b00000;
+
+                    end
+
                 end     
 
             endcase
