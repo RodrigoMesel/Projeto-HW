@@ -25,7 +25,7 @@ module CPU (input clk, reset);
     wire [31:0] BRoutA;
     wire [31:0] BRoutB;
     wire [31:0] AOut;
-    wire [4:0] AOut5bits;
+    wire [4:0] BOut5bits;
     wire [31:0] BOut;
     wire [31:0] MuxResultA;
     wire [31:0] MuxResultB;
@@ -40,6 +40,9 @@ module CPU (input clk, reset);
     wire [31:0] MemDataRegisterOutToLBExtendido; 
     wire [31:0] LoadOut;
     wire [31:0] StoreOut;
+    wire [31:0] SOut;
+    wire [31:0] SHOut;
+    wire [31:0] SBOut;
 
     wire [31:0] ShiftInputControlOut;
     wire [4:0] ShiftNControlOut;
@@ -51,7 +54,6 @@ module CPU (input clk, reset);
     wire [25:0] JumpFromInstruction;
     wire [27:0] JumpShifted;
     wire [31:0] JumpAddress;
-
 
     //Multiplication and divison
     wire [31:0] MultHiOut;
@@ -92,7 +94,7 @@ module CPU (input clk, reset);
     wire PCWrite;
     wire MemDataWrite;
     wire [1:0] LoadControl;
-    wire StoreControl;
+    wire [1:0] StoreControl;
     wire MultOrDivLow;
     wire MultOrDivHigh;
     wire LOWrite;
@@ -106,9 +108,9 @@ module CPU (input clk, reset);
     parameter ra = 5'b11111;
 
     variaveisMontador vM(
-        PCOut, Imediato, MemDataRegisterOut, RS, RT, AOut,
+        PCOut, Imediato, MemDataRegisterOut, RS, RT, BOut,
         PCAux, RD, SHAMT, MemDataRegisterOutToLH, MemDataRegisterOutToLB,
-            JumpFromInstruction, AOut5bits, MemDataRegisterOut5bits
+        JumpFromInstruction, BOut5bits, MemDataRegisterOut5bits, SHOut, SBOut
     );
 
     Memoria mem(
@@ -192,12 +194,16 @@ module CPU (input clk, reset);
         MemDataRegisterOutToLHExtendido, MemDataRegisterOutToLBExtendido, MemDataRegisterOut, LoadControl, LoadOut
     );
 
+    muxStroe store(
+        SHOut, SBOut, SOut, StoreControl, StoreOut
+    );
+
     muxShiftInput si(
         AOut, ImediatoExtendido32bits, BOut, ShiftInputControl, ShiftInputControlOut
     );
 
     muxshiftN sn(
-        AOut5bits, 5'b10000, SHAMT, MemDataRegisterOut5bits, ShiftNControl, ShiftNControlOut 
+        BOut5bits, 5'b10000, SHAMT, MemDataRegisterOut5bits, ShiftNControl, ShiftNControlOut 
     );
 
 
