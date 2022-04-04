@@ -251,13 +251,12 @@ module CPU (input clk, reset);
 
     ControlUnit UnitOfControl(
         clk, reset, O, Op404, DivZero, OpCode, Imediato[5:0],
-        IorD, CauseControl, MemWR, IRWrite, RegDst,
-        MemToReg, RegWR, WriteA, WriteB, AluSrcA, AluSrcB,
+        zero, LT, ET, GT, neg, IorD, CauseControl, MemWR, IRWrite, 
+        RegDst, MemToReg, RegWR, WriteA, WriteB, AluSrcA, AluSrcB,
         AluOperation, AluOutWrite, PCSource, PCWrite, EPCWrite,
         MemDataWrite, LoadControl, StoreControl, 
         MultOrDivLow, MultOrDivHigh, LOWrite, HIWrite,
-        ShiftInputControl, ShiftNControl, ShiftControl,
-        zero, LT, ET, GT, neg, reset 
+        ShiftInputControl, ShiftNControl, ShiftControl, reset 
     );
 
 

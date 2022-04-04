@@ -7,6 +7,8 @@ module ControlUnit (
 
     input wire [5:0] OpCode, Funct,
 
+    input wire zero, LT, ET, GT, neg,
+
     output reg [2:0] IorD,
     output reg [1:0] CauseControl,
     output reg MemWR,
@@ -33,11 +35,6 @@ module ControlUnit (
     output reg [1:0] ShiftInputControl,
     output reg [1:0] ShiftNControl,
     output reg [2:0] ShiftControl,
-    output reg zero,
-    output reg LT,
-    output reg ET,
-    output reg GT,
-    output reg neg,
     output reg reset_out
     );
 
@@ -175,11 +172,6 @@ module ControlUnit (
                 ShiftInputControl = 2'b00;
                 ShiftNControl = 2'b00;
                 ShiftControl = 3'b000;
-                zero = 1'b0;
-                LT = 1'b0;
-                ET = 1'b0;
-                GT = 1'b0;
-                neg = 1'b0;
 
                 reset_out = 1'b1;
 
@@ -219,11 +211,6 @@ module ControlUnit (
                 ShiftInputControl = 2'b00;
                 ShiftNControl = 2'b00;
                 ShiftControl = 3'b000;
-                zero = 1'b0;
-                LT = 1'b0;
-                ET = 1'b0;
-                GT = 1'b0;
-                neg = 1'b0;
 
                 reset_out = 1'b0; //*
 
@@ -261,11 +248,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
 
                         reset_out = 1'b0;
 
@@ -314,21 +297,16 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
-
+    
                         reset_out = 1'b0;
 
-                        AluSrcA = 100;
-                        AluSrcB = 00;
-                        AluOperation = 001;
-                        RegWR = 0;
-                        AluOutWrite = 1;
-                        WriteA = 1;
-                        WriteB = 1;
+                        AluSrcA = 2'b00;
+                        AluSrcB = 3'b100;
+                        AluOperation = 3'b001;
+                        RegWR = 1'b0;
+                        AluOutWrite = 1'b1;
+                        WriteA = 1'b1;
+                        WriteB = 1'b1;
                         
                         counter = counter + 5'b00001;
 
@@ -353,21 +331,16 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
 
                         reset_out = 1'b0;
 
-                        AluSrcA = 100;
-                        AluSrcB = 00;
-                        AluOperation = 001;
-                        RegWR = 0;
-                        AluOutWrite = 1;
-                        WriteA = 1;
-                        WriteB = 1;                        
+                        AluSrcA = 2'b00;
+                        AluSrcB = 3'b100;
+                        AluOperation = 3'b001;
+                        RegWR = 1'b0;
+                        AluOutWrite = 1'b1;
+                        WriteA = 1'b1;
+                        WriteB = 1'b1;                        
 
                         counter = 5'b00000;
 
@@ -512,11 +485,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
 
                         reset_out = 1'b0;
 
@@ -558,11 +527,7 @@ module ControlUnit (
                             ShiftInputControl = 2'b00;
                             ShiftNControl = 2'b00;
                             ShiftControl = 3'b000;
-                            zero = 1'b0;
-                            LT = 1'b0;
-                            ET = 1'b0;
-                            GT = 1'b0;
-                            neg = 1'b0;
+        
 
                             reset_out = 1'b0;
 
@@ -615,11 +580,7 @@ module ControlUnit (
                                 ShiftInputControl = 2'b00;
                                 ShiftNControl = 2'b00;
                                 ShiftControl = 3'b000;
-                                zero = 1'b0;
-                                LT = 1'b0;
-                                ET = 1'b0;
-                                GT = 1'b0;
-                                neg = 1'b0;
+            
 
                                 reset_out = 1'b0;
                                 counter = 5'b00000;
@@ -667,11 +628,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
 
                         reset_out = 1'b0;
 
@@ -713,11 +670,7 @@ module ControlUnit (
                                 ShiftInputControl = 2'b00;
                                 ShiftNControl = 2'b00;
                                 ShiftControl = 3'b000;
-                                zero = 1'b0;
-                                LT = 1'b0;
-                                ET = 1'b0;
-                                GT = 1'b0;
-                                neg = 1'b0;
+            
 
                                 reset_out = 1'b0;
                                 counter = 5'b00000;
@@ -767,11 +720,7 @@ module ControlUnit (
                                 ShiftInputControl = 2'b00;
                                 ShiftNControl = 2'b00;
                                 ShiftControl = 3'b000;
-                                zero = 1'b0;
-                                LT = 1'b0;
-                                ET = 1'b0;
-                                GT = 1'b0;
-                                neg = 1'b0;
+            
 
                                 reset_out = 1'b0;
                                 counter = 5'b00000;
@@ -820,11 +769,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
 
                         reset_out = 1'b1;
 
@@ -888,11 +833,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
 
                         reset_out = 1'b0;
 
@@ -956,11 +897,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
 
                         reset_out = 1'b0;
 
@@ -1002,11 +939,7 @@ module ControlUnit (
                             ShiftInputControl = 2'b00;
                             ShiftNControl = 2'b00;
                             ShiftControl = 3'b000;
-                            zero = 1'b0;
-                            LT = 1'b0;
-                            ET = 1'b0;
-                            GT = 1'b0;
-                            neg = 1'b0;
+        
 
                             reset_out = 1'b0;
 
@@ -1058,11 +991,7 @@ module ControlUnit (
                                 ShiftInputControl = 2'b00;
                                 ShiftNControl = 2'b00;
                                 ShiftControl = 3'b000;
-                                zero = 1'b0;
-                                LT = 1'b0;
-                                ET = 1'b0;
-                                GT = 1'b0;
-                                neg = 1'b0;
+            
 
                                 reset_out = 1'b0;
                                 counter = 5'b00000;
@@ -1117,11 +1046,7 @@ module ControlUnit (
                             ShiftInputControl = 2'b00;
                             ShiftNControl = 2'b00;
                             ShiftControl = 3'b000;
-                            zero = 1'b0;
-                            LT = 1'b0;
-                            ET = 1'b0;
-                            GT = 1'b0;
-                            neg = 1'b0;
+        
 
                             reset_out = 1'b1;
 
@@ -1149,11 +1074,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
 
                         MemToReg = 3'b000;
                         RegDst = 2'b00;
@@ -1211,11 +1132,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
                         reset_out = 1'b0;
 
                         CauseControl = 2'b00;
@@ -1272,11 +1189,7 @@ module ControlUnit (
                         AluSrcA = 2'b00;
                         AluSrcB = 3'b000;
                         AluOperation = 3'b000;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
                         reset_out = 1'b0;
 
 
@@ -1347,11 +1260,7 @@ module ControlUnit (
                         MultOrDivHigh = 1'b0;
                         LOWrite = 1'b0;
                         HIWrite = 1'b0;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
 
                         reset_out = 1'b0;
 
@@ -1422,11 +1331,7 @@ module ControlUnit (
                         HIWrite = 1'b0;
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
 
                         reset_out = 1'b0;
 
@@ -1494,11 +1399,7 @@ module ControlUnit (
                         MultOrDivHigh = 1'b0;
                         LOWrite = 1'b0;
                         HIWrite = 1'b0;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
 
                         reset_out = 1'b0;
 
@@ -1566,11 +1467,7 @@ module ControlUnit (
                         MultOrDivHigh = 1'b0;
                         LOWrite = 1'b0;
                         HIWrite = 1'b0;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
 
                         reset_out = 1'b0;
 
@@ -1638,11 +1535,7 @@ module ControlUnit (
                         MultOrDivHigh = 1'b0;
                         LOWrite = 1'b0;
                         HIWrite = 1'b0;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
 
                         reset_out = 1'b0;
 
@@ -1709,11 +1602,7 @@ module ControlUnit (
                     ShiftInputControl = 2'b00;
                     ShiftNControl = 2'b00;
                     ShiftControl = 3'b000;
-                    zero = 1'b0;
-                    LT = 1'b0;
-                    ET = 1'b0;
-                    GT = 1'b0;
-                    neg = 1'b0;
+
 
                     reset_out = 1'b0;
 
@@ -1752,11 +1641,7 @@ module ControlUnit (
                     ShiftInputControl = 2'b00;
                     ShiftNControl = 2'b00;
                     ShiftControl = 3'b000;
-                    zero = 1'b0;
-                    LT = 1'b0;
-                    ET = 1'b0;
-                    GT = 1'b0;
-                    neg = 1'b0;
+
 
                     reset_out = 1'b0; 
 
@@ -1837,11 +1722,7 @@ module ControlUnit (
                     ShiftInputControl = 2'b00;
                     ShiftNControl = 2'b00;
                     ShiftControl = 3'b000;
-                    zero = 1'b0;
-                    LT = 1'b0;
-                    ET = 1'b0;
-                    GT = 1'b0;
-                    neg = 1'b0;
+
 
                     reset_out = 1'b0; 
 
@@ -1922,11 +1803,7 @@ module ControlUnit (
                     ShiftInputControl = 2'b00;
                     ShiftNControl = 2'b00;
                     ShiftControl = 3'b000;
-                    zero = 1'b0;
-                    LT = 1'b0;
-                    ET = 1'b0;
-                    GT = 1'b0;
-                    neg = 1'b0;
+
 
                     reset_out = 1'b0; 
 
@@ -2007,11 +1884,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
 
                         reset_out = 1'b0;
 
@@ -2091,11 +1964,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
 
                         reset_out = 1'b0;
 
@@ -2175,11 +2044,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
 
                         reset_out = 1'b0;
 
@@ -2256,11 +2121,7 @@ module ControlUnit (
                         CauseControl = 2'b00;
                         IorD = 3'b000;
                         MemWR = 1'b0;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
                         reset_out = 1'b0;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
@@ -2269,7 +2130,6 @@ module ControlUnit (
                         AluSrcA = 2'b10;
                         AluSrcB = 3'b010;
                         AluOperation = 3'b111;
-                        LT = 1'b1;
 
                         counter = counter + 1;
 
@@ -2311,11 +2171,7 @@ module ControlUnit (
                         CauseControl = 2'b00;
                         IorD = 3'b000;
                         MemWR = 1'b0;
-                        zero = 1'b0;
-                        LT = 1'b0;
-                        ET = 1'b0;
-                        GT = 1'b0;
-                        neg = 1'b0;
+    
                         reset_out = 1'b0;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
@@ -2324,7 +2180,6 @@ module ControlUnit (
                         AluSrcA = 2'b10;
                         AluSrcB = 3'b000;
                         AluOperation = 3'b111;
-                        LT = 1'b1;
 
                         counter = counter + 1;
 
@@ -2341,7 +2196,214 @@ module ControlUnit (
 
                     end
 
-                end     
+                end
+
+                BREAK: begin 
+                    if(counter == 5'b00000)begin
+
+                        IRWrite = 1'b0; 
+                        RegDst = 2'b00;
+                        MemToReg = 3'b000;
+                        RegWR = 1'b0;
+                        WriteA = 1'b0;
+                        WriteB = 1'b0;
+                        AluOutWrite = 1'b0;
+                        EPCWrite = 1'b0;  
+                        MemDataWrite = 1'b0;
+                        LoadControl = 1'b0;
+                        StoreControl = 1'b0;
+                        MultOrDivLow = 1'b0;
+                        MultOrDivHigh = 1'b0;
+                        LOWrite = 1'b0;
+                        HIWrite = 1'b0;
+                        CauseControl = 2'b00;
+                        IorD = 3'b000;
+                        MemWR = 1'b0;
+    
+                        reset_out = 1'b0;
+                        ShiftNControl = 2'b00;
+                        ShiftControl = 3'b000;
+                        ShiftInputControl = 2'b00;
+
+                        AluSrcA = 2'b00;
+                        AluSrcB = 3'b001;
+                        AluOperation = 3'b010;
+                        PCSource = 3'b010;
+                        PCWrite = 1'b1;
+
+                        counter = 5'b00000;
+                        state = fetch;
+
+                    end
+                end   
+
+                BEQ: begin
+
+                        IorD = 3'b000;
+                        CauseControl = 2'b00;
+                        MemWR = 1'b0;
+                        IRWrite = 1'b0;
+                        RegDst = 2'b00;
+                        MemToReg = 3'b000;
+                        RegWR = 1'b0;
+                        WriteA = 1'b0;
+                        WriteB = 1'b0;
+                        AluOutWrite = 1'b0;
+                        EPCWrite = 1'b0;  
+                        MemDataWrite = 1'b0;
+                        LoadControl = 1'b0;
+                        StoreControl = 2'b00;
+                        MultOrDivLow = 1'b0;
+                        MultOrDivHigh = 1'b0;
+                        LOWrite = 1'b0;
+                        HIWrite = 1'b0;
+                        ShiftInputControl = 2'b00;
+                        ShiftNControl = 2'b00;
+                        ShiftControl = 3'b000;
+
+                        reset_out = 1'b0;
+
+                        AluSrcA = 2'b10;
+                        AluSrcB = 3'b000;
+                        AluOperation = 3'b111;
+
+                        if(ET == 1'b1)begin
+
+                            PCSource = 3'b100;
+                            PCWrite = 1'b1;
+
+                            
+                        counter = 5'b00000;
+                        state = fetch;
+
+                    
+                end  
+
+                BNE: begin
+
+                        IorD = 3'b000;
+                        CauseControl = 2'b00;
+                        MemWR = 1'b0;
+                        IRWrite = 1'b0;
+                        RegDst = 2'b00;
+                        MemToReg = 3'b000;
+                        RegWR = 1'b0;
+                        WriteA = 1'b0;
+                        WriteB = 1'b0;
+                        AluOutWrite = 1'b0;
+                        EPCWrite = 1'b0;  
+                        MemDataWrite = 1'b0;
+                        LoadControl = 1'b0;
+                        StoreControl = 2'b00;
+                        MultOrDivLow = 1'b0;
+                        MultOrDivHigh = 1'b0;
+                        LOWrite = 1'b0;
+                        HIWrite = 1'b0;
+                        ShiftInputControl = 2'b00;
+                        ShiftNControl = 2'b00;
+                        ShiftControl = 3'b000;
+
+                        reset_out = 1'b0;
+
+                        AluSrcA = 2'b10;
+                        AluSrcB = 3'b000;
+                        AluOperation = 3'b111;
+
+                        if(ET == 1'b0)begin
+
+                            PCSource = 3'b100;
+                            PCWrite = 1'b1;
+
+                        end
+
+                        counter = 5'b00000;
+                        state = fetch;
+
+                end
+
+                BLE: begin
+
+                        IorD = 3'b000;
+                        CauseControl = 2'b00;
+                        MemWR = 1'b0;
+                        IRWrite = 1'b0;
+                        RegDst = 2'b00;
+                        MemToReg = 3'b000;
+                        RegWR = 1'b0;
+                        WriteA = 1'b0;
+                        WriteB = 1'b0;
+                        AluOutWrite = 1'b0;
+                        EPCWrite = 1'b0;  
+                        MemDataWrite = 1'b0;
+                        LoadControl = 1'b0;
+                        StoreControl = 2'b00;
+                        MultOrDivLow = 1'b0;
+                        MultOrDivHigh = 1'b0;
+                        LOWrite = 1'b0;
+                        HIWrite = 1'b0;
+                        ShiftInputControl = 2'b00;
+                        ShiftNControl = 2'b00;
+                        ShiftControl = 3'b000;
+
+                        reset_out = 1'b0;
+
+                        AluSrcA = 2'b10;
+                        AluSrcB = 3'b000;
+                        AluOperation = 3'b111;
+
+                        if(ET == 1'b1 || LT == 1'b1)begin
+
+                            PCSource = 3'b100;
+                            PCWrite = 1'b1;
+
+                        end
+
+                            counter = 5'b00000;
+                            state = fetch;
+                
+                end
+
+                BGT: begin
+
+                    IorD = 3'b000;
+                    CauseControl = 2'b00;
+                    MemWR = 1'b0;
+                    IRWrite = 1'b0;
+                    RegDst = 2'b00;
+                    MemToReg = 3'b000;
+                    RegWR = 1'b0;
+                    WriteA = 1'b0;
+                    WriteB = 1'b0;
+                    AluOutWrite = 1'b0;
+                    EPCWrite = 1'b0;  
+                    MemDataWrite = 1'b0;
+                    LoadControl = 1'b0;
+                    StoreControl = 2'b00;
+                    MultOrDivLow = 1'b0;
+                    MultOrDivHigh = 1'b0;
+                    LOWrite = 1'b0;
+                    HIWrite = 1'b0;
+                    ShiftInputControl = 2'b00;
+                    ShiftNControl = 2'b00;
+                    ShiftControl = 3'b000;
+
+                    reset_out = 1'b0;
+
+                    AluSrcA = 2'b10;
+                    AluSrcB = 3'b000;
+                    AluOperation = 3'b111;
+
+                    if(GT == 1'b1)begin
+                        PCSource = 3'b100;
+                        PCWrite = 1'b1;
+                    end
+
+                    state = fetch;
+                    counter = 5'b00000;
+                 
+
+                end
+                
 
             endcase
         end
