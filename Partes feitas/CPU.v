@@ -1,3 +1,4 @@
+`include "/menores/muxStore.v"
 
 module CPU (input clk, reset);
 
@@ -194,7 +195,7 @@ module CPU (input clk, reset);
         MemDataRegisterOutToLHExtendido, MemDataRegisterOutToLBExtendido, MemDataRegisterOut, LoadControl, LoadOut
     );
 
-    muxStroe store(
+    muxStore store(
         SHOut, SBOut, SOut, StoreControl, StoreOut
     );
 

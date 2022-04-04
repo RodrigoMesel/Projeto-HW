@@ -13,7 +13,7 @@ module variaveisMontador(
     output wire [15:0] MemDataRegisterOutToLH,
     output wire [7:0] MemDataRegisterOutToLB,
     output wire [25:0] JumpFromInstruction,
-    output wire [4:0] BOut5bits, MemDataRegisterOut5bits
+    output wire [4:0] BOut5bits, MemDataRegisterOut5bits,
     output wire [31:0] SHOut, SBOut
 
 );

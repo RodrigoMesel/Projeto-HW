@@ -1347,8 +1347,6 @@ module ControlUnit (
                         MultOrDivHigh = 1'b0;
                         LOWrite = 1'b0;
                         HIWrite = 1'b0;
-                        ShiftInputControl = 2'b00;
-                        ShiftNControl = 2'b00;
                         zero = 1'b0;
                         LT = 1'b0;
                         ET = 1'b0;
@@ -1358,18 +1356,18 @@ module ControlUnit (
                         reset_out = 1'b0;
 
                         ShiftControl = 3'b001;
+                        ShiftInputControl = 2'b10;
+                        ShiftNControl = 2'b10;
                         counter = counter + 1;
 
 
-                    end else if (counter == 5'b00001 || counter == 5'b00010)begin
+                    end else if (counter == 5'b00001)begin
 
                         ShiftControl = 3'b010;
-                        ShiftNControl = 2'b10;
-                        ShiftInputControl = 2'b10;
 
                         counter = counter + 1;
 
-                    end else if (counter == 5'b0011)begin
+                    end else if (counter == 5'b0010)begin
 
                         ShiftControl = 3'b000;
                         ShiftInputControl = 2'b00;
@@ -1442,7 +1440,6 @@ module ControlUnit (
                         ShiftNControl = 2'b00;
                         ShiftInputControl = 2'b00;
                         
-
                         counter = counter + 1;
 
                     end else if (counter == 5'b00010)begin
@@ -1497,8 +1494,6 @@ module ControlUnit (
                         MultOrDivHigh = 1'b0;
                         LOWrite = 1'b0;
                         HIWrite = 1'b0;
-                        ShiftInputControl = 2'b00;
-                        ShiftNControl = 2'b00;
                         zero = 1'b0;
                         LT = 1'b0;
                         ET = 1'b0;
@@ -1508,22 +1503,22 @@ module ControlUnit (
                         reset_out = 1'b0;
 
                         ShiftControl = 3'b001;
+                        ShiftInputControl = 2'b10;
+                        ShiftNControl = 2'b10;
                         counter = counter + 1;
 
 
                     end else if (counter == 5'b00001)begin
 
-                        ShiftControl = 3'b010;
-                        ShiftNControl = 2'b10;
-                        ShiftInputControl = 2'b10;
+                        ShiftControl = 3'b100;
 
                         counter = counter + 1;
 
                     end else if (counter == 5'b00010)begin
 
-                        ShiftControl = 3'b100;
-                        ShiftInputControl = 2'b10;
-                        ShiftNControl = 2'b10;
+                        ShiftControl = 3'b000;
+                        ShiftInputControl = 2'b00;
+                        ShiftNControl = 2'b00;
 
                         MemToReg = 3'b101;
                         RegDst = 2'b01;
@@ -1571,8 +1566,6 @@ module ControlUnit (
                         MultOrDivHigh = 1'b0;
                         LOWrite = 1'b0;
                         HIWrite = 1'b0;
-                        ShiftInputControl = 2'b00;
-                        ShiftNControl = 2'b00;
                         zero = 1'b0;
                         LT = 1'b0;
                         ET = 1'b0;
@@ -1582,14 +1575,14 @@ module ControlUnit (
                         reset_out = 1'b0;
 
                         ShiftControl = 3'b001;
+                        ShiftInputControl = 2'b00;
+                        ShiftNControl = 2'b00;
                         counter = counter + 1;
 
 
                     end else if (counter == 5'b00001)begin
 
                         ShiftControl = 3'b100;
-                        ShiftNControl = 2'b00;
-                        ShiftInputControl = 2'b00;
 
                         counter = counter + 1;
 
@@ -1645,8 +1638,6 @@ module ControlUnit (
                         MultOrDivHigh = 1'b0;
                         LOWrite = 1'b0;
                         HIWrite = 1'b0;
-                        ShiftInputControl = 2'b00;
-                        ShiftNControl = 2'b00;
                         zero = 1'b0;
                         LT = 1'b0;
                         ET = 1'b0;
@@ -1656,14 +1647,14 @@ module ControlUnit (
                         reset_out = 1'b0;
 
                         ShiftControl = 3'b001;
+                        ShiftInputControl = 2'b10;
+                        ShiftNControl = 2'b10;
                         counter = counter + 1;
 
 
                     end else if (counter == 5'b00001)begin
 
                         ShiftControl = 3'b011;
-                        ShiftNControl = 2'b10;
-                        ShiftInputControl = 2'b10;
 
                         counter = counter + 1;
 
@@ -1737,7 +1728,7 @@ module ControlUnit (
 
                 LW: begin
 
-                    if(counter = 5'b00000) begin
+                    if(counter == 5'b00000) begin
 
                     IorD = 3'b000;
                     CauseControl = 2'b00;
@@ -1822,7 +1813,7 @@ module ControlUnit (
 
                 LH: begin
 
-                    if(counter = 5'b00000) begin
+                    if(counter == 5'b00000) begin
 
                     IorD = 3'b000;
                     CauseControl = 2'b00;
@@ -1907,7 +1898,7 @@ module ControlUnit (
 
                 LB: begin
 
-                    if(counter = 5'b00000) begin
+                    if(counter == 5'b00000) begin
 
                     IorD = 3'b000;
                     CauseControl = 2'b00;
