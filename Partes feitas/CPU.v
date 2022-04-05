@@ -222,10 +222,9 @@ module CPU (input clk, reset);
         MemDataRegisterOutToLB, MemDataRegisterOutToLBExtendido
     );
 
-    signext8_32 CauseControlExtender(
+    singext8_32Excepcions CauseControlExtender(
         CauseControlOut, CauseControlOut32bits
     );
-
 
     signext1_32 LTExtender(
         LT, LTExtended
