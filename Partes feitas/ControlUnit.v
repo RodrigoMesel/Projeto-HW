@@ -177,7 +177,7 @@ module ControlUnit (
 
 
                 //Resetando a pilha
-                RegDST = 2'b10;
+                RegDst = 2'b11;
                 MemToReg = 3'b111;
                 RegWR = 1'b1;
 
@@ -219,7 +219,7 @@ module ControlUnit (
                 reset_out = 1'b0; //*
 
                 //Resetando a pilha
-                RegDST = 2'b10;
+                RegDst = 2'b11;
                 MemToReg = 3'b111;
                 RegWR = 1'b1;                
 
@@ -1610,7 +1610,6 @@ module ControlUnit (
                     ShiftNControl = 2'b00;
                     ShiftControl = 3'b000;
 
-
                     reset_out = 1'b0;
 
                     PCSource = 3'b101;
@@ -2068,6 +2067,7 @@ module ControlUnit (
                         AluSrcB = 3'b000;
                         AluOperation = 3'b000;
                         AluOutWrite = 1'b0;
+                        StoreControl = 2'b01;
 
                         IorD = 3'b000;
                         MemWR = 1'b0;
@@ -2080,19 +2080,6 @@ module ControlUnit (
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00100)begin
-
-                        MemDataWrite = 1'b0;
-                        StoreControl = 2'b01;
-                        counter = counter + 1;
-
-                    end else if(counter == 5'b00101) begin
-
-                        IorD = 3'b100;
-                        MemWR = 1'b1;
-
-                        counter = counter + 1;
-
                     end else begin
 
                         IorD = 3'b100;
@@ -2101,7 +2088,7 @@ module ControlUnit (
                         counter = 5'b00000;
                         state = fetch;
 
-                    end                    
+                    end                 
 
                 end
 

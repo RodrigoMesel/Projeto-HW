@@ -1,4 +1,3 @@
-`include "/menores/muxStore.v"
 
 module CPU (input clk, reset);
 
@@ -111,7 +110,7 @@ module CPU (input clk, reset);
     variaveisMontador vM(
         PCOut, Imediato, MemDataRegisterOut, RS, RT, BOut,
         PCAux, RD, SHAMT, MemDataRegisterOutToLH, MemDataRegisterOutToLB,
-        JumpFromInstruction, BOut5bits, MemDataRegisterOut5bits, SHOut, SBOut
+        JumpFromInstruction, BOut5bits, MemDataRegisterOut5bits, SHOut, SBOut, SOut
     );
 
     Memoria mem(
@@ -163,7 +162,7 @@ module CPU (input clk, reset);
     //MUXS
 
     muxpcsource muxpcsource(
-    MemOut, AOut, AluResult, JumpAddress, AluOutResult, EPCOut, PCSource, PCSourceResult
+        MemOut, AOut, AluResult, {PCOut[31:28], JumpShifted}, AluOutResult, EPCOut, PCSource, PCSourceResult
     );
 
     muxcausecontrol cc(
@@ -222,7 +221,7 @@ module CPU (input clk, reset);
         MemDataRegisterOutToLB, MemDataRegisterOutToLBExtendido
     );
 
-    singext8_32Excepcions CauseControlExtender(
+    signext8_32Excepcions CauseControlExtender(
         CauseControlOut, CauseControlOut32bits
     );
 
@@ -240,11 +239,6 @@ module CPU (input clk, reset);
     shiftleft2_26_28 jumpShifter(
         JumpFromInstruction, JumpShifted
     );
-
-    pcConcatenator pcConcatenator(
-        PCAux, JumpShifted, JumpAddress
-    );
-
 
     //Unidade de controle
 

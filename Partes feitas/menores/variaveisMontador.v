@@ -14,11 +14,9 @@ module variaveisMontador(
     output wire [7:0] MemDataRegisterOutToLB,
     output wire [25:0] JumpFromInstruction,
     output wire [4:0] BOut5bits, MemDataRegisterOut5bits,
-    output wire [31:0] SHOut, SBOut
+    output wire [31:0] SHOut, SBOut, SOut
 
 );
-
-    wire [9:0] JumpAux;
 
     wire [15:0] SHFromBin;
     wire [15:0] SHFromMemin;
@@ -38,11 +36,11 @@ module variaveisMontador(
     assign SHAMT = Imediato [10:6];
     assign MemDataRegisterOutToLH = MemDataRegisterOut[15:0];
     assign MemDataRegisterOutToLB = MemDataRegisterOut[7:0];
-    assign JumpAux = {RS,RT};
-    assign JumpFromInstruction = {JumpAux, Imediato};
+    assign JumpFromInstruction = {RS, RT, Imediato};
     assign BOut5bits = BOut[4:0];
     assign MemDataRegisterOut5bits = MemDataRegisterOut[4:0];
     assign SHOut = {SHFromMemin, SHFromBin};
     assign SBOut = {SBFromMemin, SBFromBin};
+    assign SOut = BOut;
 
 endmodule
