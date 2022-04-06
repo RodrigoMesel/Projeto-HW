@@ -162,11 +162,11 @@ module CPU (input clk, reset);
     //MUXS
 
     muxpcsource muxpcsource(
-        MemOut, AOut, AluResult, {PCOut[31:28], JumpShifted}, AluOutResult, EPCOut, PCSource, PCSourceResult
+        {{24{1'b0}}, MemOut[7:0]}, AOut, AluResult, {PCOut[31:28], JumpShifted}, AluOutResult, EPCOut, PCSource, PCSourceResult
     );
 
     muxcausecontrol cc(
-        8'b11111101, 8'b11111110, 8'b11111111, CauseControl, CauseControlOut
+        32'b00000000000000000000000011111101, 32'b00000000000000000000000011111110, 32'b00000000000000000000000011111111, CauseControl, CauseControlOut
     );
     
     muxiord iord(
@@ -219,10 +219,6 @@ module CPU (input clk, reset);
 
     signext8_32 loadBtExtender(
         MemDataRegisterOutToLB, MemDataRegisterOutToLBExtendido
-    );
-
-    signext8_32Excepcions CauseControlExtender(
-        CauseControlOut, CauseControlOut32bits
     );
 
     signext1_32 LTExtender(
