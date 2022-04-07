@@ -96,6 +96,7 @@ module CPU (input clk, reset);
     wire [1:0] StoreControl;
     wire MultOrDivLow;
     wire MultOrDivHigh;
+    wire multStart;
     wire LOWrite;
     wire HIWrite;
     wire [1:0] ShiftInputControl;
@@ -158,6 +159,14 @@ module CPU (input clk, reset);
         clk, reset, EPCWrite, AluResult, EPCOut
     );
 
+    Registrador HI(
+        clk, reset, HIWrite, MultOrDivHighOut, HighOut 
+    );
+
+    Registrador LO(
+        clk, reset, LOWrite, MultOrDivLowOut, LowOut
+    );
+
     //MUXS
 
     muxpcsource muxpcsource(
@@ -205,6 +214,14 @@ module CPU (input clk, reset);
         BOut5bits, 5'b10000, SHAMT, MemDataRegisterOut5bits, ShiftNControl, ShiftNControlOut 
     );
 
+    muxmultordiv multOrDivHI(
+        MultHiOut, DivHiOut, MultOrDivHigh, MultOrDivHighOut
+    );
+
+    muxmultordiv MultOrDivLO(
+        MultLoOut, DivLoOut, MultOrDivLow, MultOrDivLowOut
+    );
+
 
     //Signal Extend
 
@@ -235,6 +252,13 @@ module CPU (input clk, reset);
         JumpFromInstruction, JumpShifted
     );
 
+
+    //Mult e Div
+
+    Mult multiplication(
+        clk, reset, multStart, AOut, BOut, MultHiOut, MultLoOut  
+    );
+
     //Unidade de controle
 
     ControlUnit UnitOfControl(
@@ -244,7 +268,7 @@ module CPU (input clk, reset);
         AluOperation, AluOutWrite, PCSource, PCWrite, EPCWrite,
         MemDataWrite, LoadControl, StoreControl, 
         MultOrDivLow, MultOrDivHigh, LOWrite, HIWrite,
-        ShiftInputControl, ShiftNControl, ShiftControl, reset 
+        ShiftInputControl, ShiftNControl, ShiftControl, multStart, reset 
     );
 
 

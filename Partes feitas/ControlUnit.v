@@ -35,13 +35,14 @@ module ControlUnit (
     output reg [1:0] ShiftInputControl,
     output reg [1:0] ShiftNControl,
     output reg [2:0] ShiftControl,
+    output reg multStart,
     output reg reset_out
     );
 
     //Variáveis
 
     reg [5:0] state;
-    reg [4:0] counter;
+    reg [5:0] counter;
 
     //Estados
 
@@ -172,6 +173,7 @@ module ControlUnit (
                 ShiftInputControl = 2'b00;
                 ShiftNControl = 2'b00;
                 ShiftControl = 3'b000;
+                multStart = 1'b0;
 
                 reset_out = 1'b1;
 
@@ -181,7 +183,7 @@ module ControlUnit (
                 MemToReg = 3'b111;
                 RegWR = 1'b1;
 
-                counter = 5'b0000;
+                counter = 6'b000000;
  
             end else begin
                 
@@ -215,6 +217,7 @@ module ControlUnit (
                 ShiftInputControl = 2'b00;
                 ShiftNControl = 2'b00;
                 ShiftControl = 3'b000;
+                multStart = 1'b0;
 
                 reset_out = 1'b0; //*
 
@@ -223,7 +226,7 @@ module ControlUnit (
                 MemToReg = 3'b111;
                 RegWR = 1'b1;                
 
-                counter = 5'b0000;
+                counter = 6'b000000;
 
             end
 
@@ -231,7 +234,7 @@ module ControlUnit (
         
             case (state)
                 fetch: begin
-                    if(counter != 5'b00011)begin
+                    if(counter != 6'b000011)begin
 
                         state = fetch;
 
@@ -255,8 +258,8 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
+                        multStart = 1'b0;
     
-
                         reset_out = 1'b0;
 
                         IorD = 3'b000;
@@ -266,7 +269,7 @@ module ControlUnit (
                         AluOperation = 3'b001;
                         PCSource = 3'b010;
 
-                        counter = counter + 5'b00001;
+                        counter = counter + 1;
 
                     end else begin
 
@@ -275,7 +278,7 @@ module ControlUnit (
                         PCSource = 3'b010;
                         AluSrcB = 3'b001;
                         AluOperation = 3'b001;
-                        counter = 5'b00000;
+                        counter = 6'b000000;
                         state = decode;
 
                     end
@@ -283,7 +286,7 @@ module ControlUnit (
                 end
 
                 decode: begin
-                    if(counter == 5'b00000)begin
+                    if(counter == 6'b000000)begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -304,6 +307,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
+                        multStart = 1'b0;
     
                         reset_out = 1'b0;
 
@@ -315,9 +319,9 @@ module ControlUnit (
                         WriteA = 1'b1;
                         WriteB = 1'b1;
                         
-                        counter = counter + 5'b00001;
+                        counter = counter + 1;
 
-                    end else if(counter == 5'b00001) begin
+                    end else if(counter == 6'b000001) begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -338,6 +342,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
+                        multStart = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -349,7 +354,7 @@ module ControlUnit (
                         WriteA = 1'b1;
                         WriteB = 1'b1;                        
 
-                        counter = 5'b00000;
+                        counter = 6'b000000;
 
                         case(OpCode)
                             opcodeR: begin
@@ -468,7 +473,7 @@ module ControlUnit (
 
                 ADD: begin
                     
-                    if(counter == 5'b00000)begin
+                    if(counter == 6'b000000)begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -492,6 +497,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
+                        multStart = 1'b0;
     
 
                         reset_out = 1'b0;
@@ -502,9 +508,9 @@ module ControlUnit (
                         AluOutWrite = 1;
 
                         
-                        counter = counter + 5'b00001;
+                        counter = counter + 1;
                     
-                    end else if(counter == 5'b00001)begin
+                    end else if(counter == 6'b000001)begin
 
                         if(O == 1)begin
 
@@ -534,11 +540,12 @@ module ControlUnit (
                             ShiftInputControl = 2'b00;
                             ShiftNControl = 2'b00;
                             ShiftControl = 3'b000;
+                            multStart = 1'b0;
         
 
                             reset_out = 1'b0;
 
-                            counter = 5'b00000;
+                            counter = 6'b000000;
                             state = overflow;
                         end
 
@@ -558,7 +565,7 @@ module ControlUnit (
                         end
                     
 
-                    end else if(counter == 5'b00010)begin
+                    end else if(counter == 6'b000010)begin
                             if(O == 1)begin
 
                                 IorD = 3'b000;
@@ -587,10 +594,11 @@ module ControlUnit (
                                 ShiftInputControl = 2'b00;
                                 ShiftNControl = 2'b00;
                                 ShiftControl = 3'b000;
+                                multStart = 1'b0;
             
 
                                 reset_out = 1'b0;
-                                counter = 5'b00000;
+                                counter = 6'b000000;
                                 state = overflow;
                         end
 
@@ -601,7 +609,7 @@ module ControlUnit (
                             RegDst = 01;
                             RegWR = 1;
 
-                            counter = 5'b00000;
+                            counter = 6'b000000;
                             state = fetch;
                         end
                     end
@@ -611,7 +619,7 @@ module ControlUnit (
 
                 ADDI: begin
 
-                    if(counter == 5'b00000)begin 
+                    if(counter == 6'b000000)begin 
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -635,7 +643,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-    
+                        multStart = 1'b0;    
 
                         reset_out = 1'b0;
 
@@ -647,41 +655,41 @@ module ControlUnit (
                         counter = counter + 1;
 
 
-                    end else if (counter == 5'b00001) begin
+                    end else if (counter == 6'b000001) begin
 
                         if(O == 1) begin
 
-                                IorD = 3'b000;
-                                CauseControl = 2'b00;
-                                MemWR = 1'b0;
-                                IRWrite = 1'b0;
-                                RegDst = 2'b00;
-                                MemToReg = 3'b000;
-                                RegWR = 1'b0;
-                                WriteA = 1'b0;
-                                WriteB = 1'b0;
-                                AluSrcA = 2'b00;
-                                AluSrcB = 3'b000;
-                                AluOperation = 3'b000;
-                                AluOutWrite = 1'b0;
-                                PCSource = 3'b000;
-                                PCWrite = 1'b0;
-                                EPCWrite = 1'b0;  
-                                MemDataWrite = 1'b0;
-                                LoadControl = 1'b0;
-                                StoreControl = 2'b00;
-                                MultOrDivLow = 1'b0;
-                                MultOrDivHigh = 1'b0;
-                                LOWrite = 1'b0;
-                                HIWrite = 1'b0;
-                                ShiftInputControl = 2'b00;
-                                ShiftNControl = 2'b00;
-                                ShiftControl = 3'b000;
-            
+                            IorD = 3'b000;
+                            CauseControl = 2'b00;
+                            MemWR = 1'b0;
+                            IRWrite = 1'b0;
+                            RegDst = 2'b00;
+                            MemToReg = 3'b000;
+                            RegWR = 1'b0;
+                            WriteA = 1'b0;
+                            WriteB = 1'b0;
+                            AluSrcA = 2'b00;
+                            AluSrcB = 3'b000;
+                            AluOperation = 3'b000;
+                            AluOutWrite = 1'b0;
+                            PCSource = 3'b000;
+                            PCWrite = 1'b0;
+                            EPCWrite = 1'b0;  
+                            MemDataWrite = 1'b0;
+                            LoadControl = 1'b0;
+                            StoreControl = 2'b00;
+                            MultOrDivLow = 1'b0;
+                            MultOrDivHigh = 1'b0;
+                            LOWrite = 1'b0;
+                            HIWrite = 1'b0;
+                            ShiftInputControl = 2'b00;
+                            ShiftNControl = 2'b00;
+                            ShiftControl = 3'b000;
+                            multStart = 1'b0;            
 
-                                reset_out = 1'b0;
-                                counter = 5'b00000;
-                                state = overflow;
+                            reset_out = 1'b0;
+                            counter = 6'b000000;
+                            state = overflow;
 
                         end else begin
 
@@ -697,41 +705,41 @@ module ControlUnit (
                         counter = counter + 1;
                         end
 
-                    end else if (counter == 5'b00010) begin
+                    end else if (counter == 6'b000010) begin
 
                         if (O == 1) begin
 
-                                IorD = 3'b000;
-                                CauseControl = 2'b00;
-                                MemWR = 1'b0;
-                                IRWrite = 1'b0;
-                                RegDst = 2'b00;
-                                MemToReg = 3'b000;
-                                RegWR = 1'b0;
-                                WriteA = 1'b0;
-                                WriteB = 1'b0;
-                                AluSrcA = 2'b00;
-                                AluSrcB = 3'b000;
-                                AluOperation = 3'b000;
-                                AluOutWrite = 1'b0;
-                                PCSource = 3'b000;
-                                PCWrite = 1'b0;
-                                EPCWrite = 1'b0;  
-                                MemDataWrite = 1'b0;
-                                LoadControl = 1'b0;
-                                StoreControl = 2'b00;
-                                MultOrDivLow = 1'b0;
-                                MultOrDivHigh = 1'b0;
-                                LOWrite = 1'b0;
-                                HIWrite = 1'b0;
-                                ShiftInputControl = 2'b00;
-                                ShiftNControl = 2'b00;
-                                ShiftControl = 3'b000;
-            
+                            IorD = 3'b000;
+                            CauseControl = 2'b00;
+                            MemWR = 1'b0;
+                            IRWrite = 1'b0;
+                            RegDst = 2'b00;
+                            MemToReg = 3'b000;
+                            RegWR = 1'b0;
+                            WriteA = 1'b0;
+                            WriteB = 1'b0;
+                            AluSrcA = 2'b00;
+                            AluSrcB = 3'b000;
+                            AluOperation = 3'b000;
+                            AluOutWrite = 1'b0;
+                            PCSource = 3'b000;
+                            PCWrite = 1'b0;
+                            EPCWrite = 1'b0;  
+                            MemDataWrite = 1'b0;
+                            LoadControl = 1'b0;
+                            StoreControl = 2'b00;
+                            MultOrDivLow = 1'b0;
+                            MultOrDivHigh = 1'b0;
+                            LOWrite = 1'b0;
+                            HIWrite = 1'b0;
+                            ShiftInputControl = 2'b00;
+                            ShiftNControl = 2'b00;
+                            ShiftControl = 3'b000;
+                            multStart = 1'b0;            
 
-                                reset_out = 1'b0;
-                                counter = 5'b00000;
-                                state = overflow;
+                            reset_out = 1'b0;
+                            counter = 6'b000000;
+                            state = overflow;
 
                         end else begin
                         
@@ -741,7 +749,7 @@ module ControlUnit (
                         RegDst = 2'b00;
                         RegWR = 1'b1;
 
-                        counter = 5'b00000;
+                        counter = 6'b000000;
 
                         end                        
 
@@ -752,7 +760,7 @@ module ControlUnit (
 
                 ADDIU: begin
                     
-                    if(counter == 5'b00000)begin 
+                    if(counter == 6'b000000)begin 
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -776,7 +784,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-    
+                        multStart = 1'b0;    
 
                         reset_out = 1'b1;
 
@@ -788,7 +796,7 @@ module ControlUnit (
                         counter = counter + 1;
 
 
-                    end else if (counter == 5'b00001) begin
+                    end else if (counter == 6'b000001) begin
 
                         MemToReg = 3'b011;
                         RegDst = 2'b00;
@@ -801,7 +809,7 @@ module ControlUnit (
 
                         counter = counter + 1;
 
-                    end else if (counter == 5'b00010) begin
+                    end else if (counter == 6'b000010) begin
                         
                         state = fetch;
 
@@ -809,14 +817,14 @@ module ControlUnit (
                         RegDst = 2'b00;
                         RegWR = 1'b1;
 
-                        counter = 5'b00000;                        
+                        counter = 6'b000000;                        
 
                     end               
 
                 end
 
                 AND : begin
-                    if(counter == 5'b00000)begin
+                    if(counter == 6'b000000)begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -840,7 +848,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-    
+                        multStart = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -850,9 +858,9 @@ module ControlUnit (
                         AluOutWrite = 1;
 
                         
-                        counter = counter + 5'b00001;
+                        counter = counter + 1;
                     
-                    end else if(counter == 5'b00001)begin                          
+                    end else if(counter == 6'b000001)begin                          
 
                             MemToReg = 011;
                             RegDst = 01;
@@ -865,14 +873,14 @@ module ControlUnit (
 
                             counter = counter + 1;
 
-                    end else if(counter == 5'b00010)begin
+                    end else if(counter == 6'b000010)begin
        
                             reset_out = 1'b0;
                             MemToReg = 011;
                             RegDst = 01;
                             RegWR = 1;
 
-                            counter = 5'b00000;
+                            counter = 6'b000000;
                             state = fetch;
                     end                    
 
@@ -880,7 +888,7 @@ module ControlUnit (
 
                 SUB: begin 
 
-                        if(counter == 5'b00000)begin
+                    if(counter == 6'b000000)begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -904,7 +912,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-    
+                        multStart = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -913,10 +921,9 @@ module ControlUnit (
                         AluOperation = 010;
                         AluOutWrite = 1;
 
-                        
-                        counter = counter + 5'b00001;
+                        counter = counter + 1;
                     
-                    end else if(counter == 5'b00001)begin
+                    end else if(counter == 6'b000001)begin
 
                         if(O == 1)begin
 
@@ -946,11 +953,11 @@ module ControlUnit (
                             ShiftInputControl = 2'b00;
                             ShiftNControl = 2'b00;
                             ShiftControl = 3'b000;
-        
+                            multStart = 1'b0;
 
                             reset_out = 1'b0;
 
-                            counter = 5'b00000;
+                            counter = 6'b000000;
                             state = overflow;
                         end
 
@@ -969,40 +976,42 @@ module ControlUnit (
                         end
                     
 
-                    end else if(counter == 5'b00010)begin
-                            if(O == 1)begin
+                    end else if(counter == 6'b000010)begin
+                        
+                        if(O == 1)begin
 
-                                IorD = 3'b000;
-                                CauseControl = 2'b00;
-                                MemWR = 1'b0;
-                                IRWrite = 1'b0;
-                                RegDst = 2'b00;
-                                MemToReg = 3'b000;
-                                RegWR = 1'b0;
-                                WriteA = 1'b0;
-                                WriteB = 1'b0;
-                                AluSrcA = 2'b00;
-                                AluSrcB = 3'b000;
-                                AluOperation = 3'b000;
-                                AluOutWrite = 1'b0;
-                                PCSource = 3'b000;
-                                PCWrite = 1'b0;
-                                EPCWrite = 1'b0;  
-                                MemDataWrite = 1'b0;
-                                LoadControl = 1'b0;
-                                StoreControl = 2'b00;
-                                MultOrDivLow = 1'b0;
-                                MultOrDivHigh = 1'b0;
-                                LOWrite = 1'b0;
-                                HIWrite = 1'b0;
-                                ShiftInputControl = 2'b00;
-                                ShiftNControl = 2'b00;
-                                ShiftControl = 3'b000;
-            
+                            IorD = 3'b000;
+                            CauseControl = 2'b00;
+                            MemWR = 1'b0;
+                            IRWrite = 1'b0;
+                            RegDst = 2'b00;
+                            MemToReg = 3'b000;
+                            RegWR = 1'b0;
+                            WriteA = 1'b0;
+                            WriteB = 1'b0;
+                            AluSrcA = 2'b00;
+                            AluSrcB = 3'b000;
+                            AluOperation = 3'b000;
+                            AluOutWrite = 1'b0;
+                            PCSource = 3'b000;
+                            PCWrite = 1'b0;
+                            EPCWrite = 1'b0;  
+                            MemDataWrite = 1'b0;
+                            LoadControl = 1'b0;
+                            StoreControl = 2'b00;
+                            MultOrDivLow = 1'b0;
+                            MultOrDivHigh = 1'b0;
+                            LOWrite = 1'b0;
+                            HIWrite = 1'b0;
+                            ShiftInputControl = 2'b00;
+                            ShiftNControl = 2'b00;
+                            ShiftControl = 3'b000;
+                            multStart = 1'b0;
+        
 
-                                reset_out = 1'b0;
-                                counter = 5'b00000;
-                                state = overflow;
+                            reset_out = 1'b0;
+                            counter = 6'b000000;
+                            state = overflow;
                         end
 
                         else begin
@@ -1012,7 +1021,7 @@ module ControlUnit (
                             RegDst = 01;
                             RegWR = 1;
 
-                            counter = 5'b00000;
+                            counter = 6'b000000;
                             state = fetch;
 
                         end
@@ -1022,7 +1031,7 @@ module ControlUnit (
                 
                 RESET_State: begin
 
-                    if(counter == 5'b00000)begin
+                    if(counter == 6'b000000)begin
 
                             state = RESET_State; //*
 
@@ -1053,6 +1062,7 @@ module ControlUnit (
                             ShiftInputControl = 2'b00;
                             ShiftNControl = 2'b00;
                             ShiftControl = 3'b000;
+                            multStart = 1'b0;
         
 
                             reset_out = 1'b1;
@@ -1081,7 +1091,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-    
+                        multStart = 1'b0;
 
                         MemToReg = 3'b000;
                         RegDst = 2'b00;
@@ -1099,16 +1109,12 @@ module ControlUnit (
 
                     end else begin
 
-                        AluSrcA = 2'b00;
-                        AluSrcB = 3'b000;
-                        AluOperation = 3'b000;
-
                         EPCWrite = 1'b1;
                         PCSource = 3'b000;
                         PCWrite = 1'b1;
 
                         state = fetch;
-                        counter = 5'b00000;
+                        counter = 6'b000000;
 
                     end
 
@@ -1139,7 +1145,8 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-    
+                        multStart = 1'b0;
+
                         reset_out = 1'b0;
 
                         CauseControl = 2'b00;
@@ -1153,19 +1160,22 @@ module ControlUnit (
 
                     end else begin
 
+                        AluSrcB = 3'b000;
+                        AluOperation = 3'b000;
+
                         EPCWrite = 1'b1;
                         PCSource = 3'b000;
                         PCWrite = 1'b1;
 
                         state = fetch;
-                        counter = 5'b00000;
+                        counter = 6'b000000;
 
                     end
 
                 end
 
                 LUI: begin
-                    if(counter == 5'b00000)begin
+                    if(counter == 6'b000000)begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -1193,9 +1203,9 @@ module ControlUnit (
                         AluSrcA = 2'b00;
                         AluSrcB = 3'b000;
                         AluOperation = 3'b000;
-    
-                        reset_out = 1'b0;
+                        multStart = 1'b0;
 
+                        reset_out = 1'b0;
 
                         ShiftNControl = 2'b01;
                         ShiftControl = 3'b001;
@@ -1204,13 +1214,13 @@ module ControlUnit (
 
                         counter = counter + 1;
                     
-                    end else if (counter == 5'b00001) begin
+                    end else if (counter == 6'b000001) begin
 
                         ShiftControl = 3'b010;
 
                         counter = counter + 1;
 
-                    end else if (counter == 5'b00010) begin
+                    end else if (counter == 6'b000010) begin
 
                         MemToReg = 3'b101;
                         RegDst = 2'b00;
@@ -1224,7 +1234,7 @@ module ControlUnit (
 
                         counter = counter + 1;
 
-                    end else if (counter == 5'b00011) begin
+                    end else if (counter == 6'b000011) begin
 
                         state = fetch;
 
@@ -1232,14 +1242,14 @@ module ControlUnit (
                         RegDst = 2'b00;
                         RegWR = 1'b1;
 
-                        counter = 5'b00000;
+                        counter = 6'b000000;
 
                     end
                 end
 
                 SLL : begin
 
-                    if(counter == 5'b00000)begin
+                    if(counter == 6'b000000)begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -1264,7 +1274,7 @@ module ControlUnit (
                         MultOrDivHigh = 1'b0;
                         LOWrite = 1'b0;
                         HIWrite = 1'b0;
-    
+                        multStart = 1'b0;    
 
                         reset_out = 1'b0;
 
@@ -1274,13 +1284,13 @@ module ControlUnit (
                         counter = counter + 1;
 
 
-                    end else if (counter == 5'b00001)begin
+                    end else if (counter == 6'b000001)begin
 
                         ShiftControl = 3'b010;
 
                         counter = counter + 1;
 
-                    end else if (counter == 5'b0010)begin
+                    end else if (counter == 6'b00010)begin
 
                         ShiftControl = 3'b000;
                         ShiftInputControl = 2'b00;
@@ -1299,7 +1309,7 @@ module ControlUnit (
                         RegWR = 1'b1;
 
                         state = fetch;
-                        counter = 5'b00000;
+                        counter = 6'b000000;
 
                     end
 
@@ -1308,42 +1318,42 @@ module ControlUnit (
 
                 SLLV: begin
 
-                        if(counter == 5'b00000)begin
+                    if(counter == 6'b000000)begin
 
-                        IorD = 3'b000;
-                        CauseControl = 2'b00;
-                        MemWR = 1'b0;
-                        IRWrite = 1'b0;
-                        RegDst = 2'b00;
-                        MemToReg = 3'b000;
-                        RegWR = 1'b0;
-                        WriteA = 1'b0;
-                        WriteB = 1'b0;
-                        AluSrcA = 2'b00;
-                        AluSrcB = 3'b000;
-                        AluOperation = 3'b000;
-                        AluOutWrite = 1'b0;
-                        PCSource = 3'b000;
-                        PCWrite = 1'b0;
-                        EPCWrite = 1'b0;  
-                        MemDataWrite = 1'b0;
-                        LoadControl = 1'b0;
-                        StoreControl = 2'b00;
-                        MultOrDivLow = 1'b0;
-                        MultOrDivHigh = 1'b0;
-                        LOWrite = 1'b0;
-                        HIWrite = 1'b0;
-                        ShiftInputControl = 2'b00;
-                        ShiftNControl = 2'b00;
-    
+                    IorD = 3'b000;
+                    CauseControl = 2'b00;
+                    MemWR = 1'b0;
+                    IRWrite = 1'b0;
+                    RegDst = 2'b00;
+                    MemToReg = 3'b000;
+                    RegWR = 1'b0;
+                    WriteA = 1'b0;
+                    WriteB = 1'b0;
+                    AluSrcA = 2'b00;
+                    AluSrcB = 3'b000;
+                    AluOperation = 3'b000;
+                    AluOutWrite = 1'b0;
+                    PCSource = 3'b000;
+                    PCWrite = 1'b0;
+                    EPCWrite = 1'b0;  
+                    MemDataWrite = 1'b0;
+                    LoadControl = 1'b0;
+                    StoreControl = 2'b00;
+                    MultOrDivLow = 1'b0;
+                    MultOrDivHigh = 1'b0;
+                    LOWrite = 1'b0;
+                    HIWrite = 1'b0;
+                    ShiftInputControl = 2'b00;
+                    ShiftNControl = 2'b00;
+                    multStart = 1'b0;
 
-                        reset_out = 1'b0;
+                    reset_out = 1'b0;
 
-                        ShiftControl = 3'b001;
-                        counter = counter + 1;
+                    ShiftControl = 3'b001;
+                    counter = counter + 1;
 
 
-                    end else if (counter == 5'b00001)begin
+                    end else if (counter == 6'b000001)begin
 
                         ShiftControl = 3'b010;
                         ShiftNControl = 2'b00;
@@ -1351,7 +1361,7 @@ module ControlUnit (
                         
                         counter = counter + 1;
 
-                    end else if (counter == 5'b00010)begin
+                    end else if (counter == 6'b000010)begin
 
                         ShiftControl = 3'b000;
                         ShiftInputControl = 2'b00;
@@ -1370,7 +1380,7 @@ module ControlUnit (
                         RegWR = 1'b1;
 
                         state = fetch;
-                        counter = 5'b00000;
+                        counter = 6'b000000;
 
                     end
 
@@ -1378,7 +1388,7 @@ module ControlUnit (
 
                 SRA : begin
 
-                    if(counter == 5'b00000)begin
+                    if(counter == 6'b000000)begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -1403,7 +1413,7 @@ module ControlUnit (
                         MultOrDivHigh = 1'b0;
                         LOWrite = 1'b0;
                         HIWrite = 1'b0;
-    
+                        multStart = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -1413,13 +1423,13 @@ module ControlUnit (
                         counter = counter + 1;
 
 
-                    end else if (counter == 5'b00001)begin
+                    end else if (counter == 6'b000001)begin
 
                         ShiftControl = 3'b100;
 
                         counter = counter + 1;
 
-                    end else if (counter == 5'b00010)begin
+                    end else if (counter == 6'b000010)begin
 
                         ShiftControl = 3'b000;
                         ShiftInputControl = 2'b00;
@@ -1438,7 +1448,7 @@ module ControlUnit (
                         RegWR = 1'b1;
 
                         state = fetch;
-                        counter = 5'b00000;
+                        counter = 6'b000000;
 
                     end
 
@@ -1446,7 +1456,7 @@ module ControlUnit (
 
                 SRAV: begin
 
-                    if(counter == 5'b00000)begin
+                    if(counter == 6'b000000)begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -1471,7 +1481,7 @@ module ControlUnit (
                         MultOrDivHigh = 1'b0;
                         LOWrite = 1'b0;
                         HIWrite = 1'b0;
-    
+                        multStart = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -1481,13 +1491,13 @@ module ControlUnit (
                         counter = counter + 1;
 
 
-                    end else if (counter == 5'b00001)begin
+                    end else if (counter == 6'b000001)begin
 
                         ShiftControl = 3'b100;
 
                         counter = counter + 1;
 
-                    end else if (counter == 5'b00010)begin
+                    end else if (counter == 6'b000010)begin
 
                         ShiftControl = 3'b000;
                         ShiftInputControl = 2'b00;
@@ -1506,7 +1516,7 @@ module ControlUnit (
                         RegWR = 1'b1;
 
                         state = fetch;
-                        counter = 5'b00000;
+                        counter = 6'b000000;
 
                     end
 
@@ -1514,7 +1524,7 @@ module ControlUnit (
 
                 SRL: begin
 
-                    if(counter == 5'b00000)begin
+                    if(counter == 6'b000000)begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -1539,7 +1549,7 @@ module ControlUnit (
                         MultOrDivHigh = 1'b0;
                         LOWrite = 1'b0;
                         HIWrite = 1'b0;
-    
+                        multStart = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -1549,13 +1559,13 @@ module ControlUnit (
                         counter = counter + 1;
 
 
-                    end else if (counter == 5'b00001)begin
+                    end else if (counter == 6'b000001)begin
 
                         ShiftControl = 3'b011;
 
                         counter = counter + 1;
 
-                    end else if (counter == 5'b00010)begin
+                    end else if (counter == 6'b000010)begin
 
                         ShiftControl = 3'b000;
                         ShiftInputControl = 2'b00;
@@ -1574,7 +1584,7 @@ module ControlUnit (
                         RegWR = 1'b1;
 
                         state = fetch;
-                        counter = 5'b00000;
+                        counter = 6'b000000;
 
                     end
 
@@ -1606,13 +1616,14 @@ module ControlUnit (
                     ShiftInputControl = 2'b00;
                     ShiftNControl = 2'b00;
                     ShiftControl = 3'b000;
+                    multStart = 1'b0;
 
                     reset_out = 1'b0;
 
                     PCSource = 3'b101;
                     PCWrite = 1'b1;
 
-                    counter = 5'b00000;
+                    counter = 6'b000000;
                     state = fetch;
 
 
@@ -1620,7 +1631,7 @@ module ControlUnit (
 
                 LW: begin
 
-                    if(counter == 5'b00000) begin
+                    if(counter == 6'b000000) begin
 
                     IorD = 3'b000;
                     CauseControl = 2'b00;
@@ -1644,7 +1655,7 @@ module ControlUnit (
                     ShiftInputControl = 2'b00;
                     ShiftNControl = 2'b00;
                     ShiftControl = 3'b000;
-
+                    multStart = 1'b0;
 
                     reset_out = 1'b0; 
 
@@ -1655,7 +1666,7 @@ module ControlUnit (
 
                     counter = counter + 1;
 
-                    end else if(counter == 5'b00001 || counter == 5'b00010) begin
+                    end else if(counter == 6'b000001 || counter == 6'b000010) begin
 
                         AluSrcA = 2'b00;
                         AluSrcB = 3'b000;
@@ -1667,14 +1678,14 @@ module ControlUnit (
                         
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00011) begin
+                    end else if(counter == 6'b000011) begin
 
                         MemDataWrite = 1'b1;
                         IorD = 3'b000;
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00100) begin
+                    end else if(counter == 6'b000100) begin
 
                         MemDataWrite = 1'b0;
                         LoadControl = 2'b10;
@@ -1693,7 +1704,7 @@ module ControlUnit (
                         RegWR = 1;
 
                         state = fetch;
-                        counter = 5'b00000;                        
+                        counter = 6'b000000;                        
 
                     end                 
 
@@ -1701,7 +1712,7 @@ module ControlUnit (
 
                 LH: begin
 
-                    if(counter == 5'b00000) begin
+                    if(counter == 6'b000000) begin
 
                     IorD = 3'b000;
                     CauseControl = 2'b00;
@@ -1725,7 +1736,7 @@ module ControlUnit (
                     ShiftInputControl = 2'b00;
                     ShiftNControl = 2'b00;
                     ShiftControl = 3'b000;
-
+                    multStart = 1'b0;
 
                     reset_out = 1'b0; 
 
@@ -1736,7 +1747,7 @@ module ControlUnit (
 
                     counter = counter + 1;
 
-                    end else if(counter == 5'b00001 || counter == 5'b00010) begin
+                    end else if(counter == 6'b000001 || counter == 6'b000010) begin
 
                         AluSrcA = 2'b00;
                         AluSrcB = 3'b000;
@@ -1748,14 +1759,14 @@ module ControlUnit (
                         
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00011) begin
+                    end else if(counter == 6'b000011) begin
 
                         MemDataWrite = 1'b1;
                         IorD = 3'b000;
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00100) begin
+                    end else if(counter == 6'b000100) begin
 
                         MemDataWrite = 1'b0;
                         LoadControl = 2'b00;
@@ -1774,7 +1785,7 @@ module ControlUnit (
                         RegWR = 1;
 
                         state = fetch;
-                        counter = 5'b00000;                        
+                        counter = 6'b000000;                        
 
                     end                      
 
@@ -1782,7 +1793,7 @@ module ControlUnit (
 
                 LB: begin
 
-                    if(counter == 5'b00000) begin
+                    if(counter == 6'b000000) begin
 
                     IorD = 3'b000;
                     CauseControl = 2'b00;
@@ -1806,7 +1817,7 @@ module ControlUnit (
                     ShiftInputControl = 2'b00;
                     ShiftNControl = 2'b00;
                     ShiftControl = 3'b000;
-
+                    multStart = 1'b0;
 
                     reset_out = 1'b0; 
 
@@ -1817,7 +1828,7 @@ module ControlUnit (
 
                     counter = counter + 1;
 
-                    end else if(counter == 5'b00001 || counter == 5'b00010) begin
+                    end else if(counter == 6'b000001 || counter == 6'b000010) begin
 
                         AluSrcA = 2'b00;
                         AluSrcB = 3'b000;
@@ -1829,14 +1840,14 @@ module ControlUnit (
                         
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00011) begin
+                    end else if(counter == 6'b000011) begin
 
                         MemDataWrite = 1'b1;
                         IorD = 3'b000;
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00100) begin
+                    end else if(counter == 6'b000100) begin
 
                         MemDataWrite = 1'b0;
                         LoadControl = 2'b01;
@@ -1855,7 +1866,7 @@ module ControlUnit (
                         RegWR = 1;
 
                         state = fetch;
-                        counter = 5'b00000;                        
+                        counter = 6'b000000;                        
 
                     end  
 
@@ -1863,7 +1874,7 @@ module ControlUnit (
                 
                 SW: begin
 
-                    if (counter == 5'b00000)begin
+                    if (counter == 6'b000000)begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -1887,7 +1898,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-    
+                        multStart = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -1898,7 +1909,7 @@ module ControlUnit (
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00001 || counter == 5'b00010)begin
+                    end else if(counter == 6'b000001 || counter == 6'b000010)begin
 
                         AluSrcA = 2'b00;
                         AluSrcB = 3'b000;
@@ -1910,19 +1921,19 @@ module ControlUnit (
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00011)begin
+                    end else if(counter == 6'b000011)begin
                         
                         MemDataWrite = 1'b1;
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00100)begin
+                    end else if(counter == 6'b000100)begin
 
                         MemDataWrite = 1'b0;
                         StoreControl = 2'b10;
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00101) begin
+                    end else if(counter == 6'b000101) begin
 
                         IorD = 3'b100;
                         MemWR = 1'b1;
@@ -1934,7 +1945,7 @@ module ControlUnit (
                         IorD = 3'b100;
                         MemWR = 1'b1;
 
-                        counter = 5'b00000;
+                        counter = 6'b000000;
                         state = fetch;
 
                     end
@@ -1943,7 +1954,7 @@ module ControlUnit (
 
                 SH: begin
 
-                    if (counter == 5'b00000)begin
+                    if (counter == 6'b000000)begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -1967,7 +1978,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-    
+                        multStart = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -1978,7 +1989,7 @@ module ControlUnit (
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00001 || counter == 5'b00010)begin
+                    end else if(counter == 6'b000001 || counter == 6'b000010)begin
 
                         AluSrcA = 2'b00;
                         AluSrcB = 3'b000;
@@ -1990,19 +2001,19 @@ module ControlUnit (
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00011)begin
+                    end else if(counter == 6'b000011)begin
                         
                         MemDataWrite = 1'b1;
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00100)begin
+                    end else if(counter == 6'b000100)begin
 
                         MemDataWrite = 1'b0;
                         StoreControl = 2'b00;
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00101) begin
+                    end else if(counter == 6'b000101) begin
 
                         IorD = 3'b100;
                         MemWR = 1'b1;
@@ -2014,7 +2025,7 @@ module ControlUnit (
                         IorD = 3'b100;
                         MemWR = 1'b1;
 
-                        counter = 5'b00000;
+                        counter = 6'b000000;
                         state = fetch;
 
                     end                    
@@ -2023,7 +2034,7 @@ module ControlUnit (
 
                 SB: begin
 
-                    if (counter == 5'b00000)begin
+                    if (counter == 6'b000000)begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -2047,7 +2058,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
-    
+                        multStart = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -2058,7 +2069,7 @@ module ControlUnit (
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00001 || counter == 5'b00010)begin
+                    end else if(counter == 6'b000001 || counter == 6'b000010)begin
 
                         AluSrcA = 2'b00;
                         AluSrcB = 3'b000;
@@ -2071,7 +2082,7 @@ module ControlUnit (
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00011)begin
+                    end else if(counter == 6'b000011)begin
                         
                         MemDataWrite = 1'b1;
 
@@ -2082,7 +2093,7 @@ module ControlUnit (
                         IorD = 3'b100;
                         MemWR = 1'b1;
 
-                        counter = 5'b00000;
+                        counter = 6'b000000;
                         state = fetch;
 
                     end                 
@@ -2090,7 +2101,7 @@ module ControlUnit (
                 end
 
                 SLTI: begin
-                    if(counter == 5'b00000)begin
+                    if(counter == 6'b000000)begin
 
                         IRWrite = 1'b0; 
                         RegDst = 2'b00;
@@ -2112,8 +2123,10 @@ module ControlUnit (
                         CauseControl = 2'b00;
                         IorD = 3'b000;
                         MemWR = 1'b0;
+                        multStart = 1'b0;
     
                         reset_out = 1'b0;
+
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
                         ShiftInputControl = 2'b00;
@@ -2124,7 +2137,7 @@ module ControlUnit (
 
                         counter = counter + 1;
 
-                    end else if (counter == 5'b00001) begin
+                    end else if (counter == 6'b000001) begin
                         
                         state = fetch;
 
@@ -2133,14 +2146,14 @@ module ControlUnit (
                         RegWR = 1'b1;
                         
                         
-                        counter = 5'b00000;
+                        counter = 6'b000000;
 
                     end
                 end
 
                 SLT: begin 
 
-                    if(counter == 5'b00000)begin
+                    if(counter == 6'b000000)begin
 
                         IRWrite = 1'b0; 
                         RegDst = 2'b00;
@@ -2162,8 +2175,10 @@ module ControlUnit (
                         CauseControl = 2'b00;
                         IorD = 3'b000;
                         MemWR = 1'b0;
+                        multStart = 1'b0;
     
                         reset_out = 1'b0;
+
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
                         ShiftInputControl = 2'b00;
@@ -2174,7 +2189,7 @@ module ControlUnit (
 
                         counter = counter + 1;
 
-                    end else if (counter == 5'b00001) begin 
+                    end else if (counter == 6'b000001) begin 
 
                         state = fetch;
 
@@ -2183,14 +2198,15 @@ module ControlUnit (
                         RegWR = 1'b1;
                         
                         
-                        counter = 5'b00000;
+                        counter = 6'b000000;
 
                     end
 
                 end
 
                 BREAK: begin 
-                    if(counter == 5'b00000)begin
+
+                    if(counter == 6'b000000)begin
 
                         IRWrite = 1'b0; 
                         RegDst = 2'b00;
@@ -2210,8 +2226,10 @@ module ControlUnit (
                         CauseControl = 2'b00;
                         IorD = 3'b000;
                         MemWR = 1'b0;
+                        multStart = 1'b0;
     
                         reset_out = 1'b0;
+
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
                         ShiftInputControl = 2'b00;
@@ -2222,7 +2240,7 @@ module ControlUnit (
                         PCSource = 3'b010;
                         PCWrite = 1'b1;
 
-                        counter = 5'b00000;
+                        counter = 6'b000000;
                         state = fetch;
 
                     end
@@ -2230,7 +2248,7 @@ module ControlUnit (
 
                 BEQ: begin
 
-                    if(counter == 5'b00000) begin
+                    if(counter == 6'b000000) begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -2253,6 +2271,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
+                        multStart = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -2262,14 +2281,14 @@ module ControlUnit (
 
                         counter  = counter + 1;
 
-                    end else if(counter == 5'b00001)begin
+                    end else if(counter == 6'b000001)begin
 
                         if(ET == 1'b1)begin
 
                             PCSource = 3'b100;
                             PCWrite = 1'b1;
 
-                            counter = 5'b00000;
+                            counter = 6'b000000;
                             state = fetch;
 
                         end else begin
@@ -2278,7 +2297,7 @@ module ControlUnit (
                             AluSrcB = 3'b000;
                             AluOperation = 3'b000;
 
-                            counter = 5'b00000;
+                            counter = 6'b000000;
                             state = fetch;
 
                         end
@@ -2289,7 +2308,7 @@ module ControlUnit (
 
                 BNE: begin
 
-                    if(counter == 5'b00000) begin
+                    if(counter == 6'b000000) begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -2312,6 +2331,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
+                        multStart = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -2321,14 +2341,14 @@ module ControlUnit (
 
                         counter  = counter + 1;
 
-                    end else if(counter == 5'b00001)begin
+                    end else if(counter == 6'b000001)begin
 
                         if(ET == 1'b0)begin
 
                             PCSource = 3'b100;
                             PCWrite = 1'b1;
 
-                            counter = 5'b00000;
+                            counter = 6'b000000;
                             state = fetch;
 
                         end else begin
@@ -2337,7 +2357,7 @@ module ControlUnit (
                             AluSrcB = 3'b000;
                             AluOperation = 3'b000;
 
-                            counter = 5'b00000;
+                            counter = 6'b000000;
                             state = fetch;
 
                         end
@@ -2348,7 +2368,7 @@ module ControlUnit (
 
                 BLE: begin
 
-                    if(counter == 5'b00000) begin
+                    if(counter == 6'b000000) begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -2371,6 +2391,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
+                        multStart = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -2380,14 +2401,14 @@ module ControlUnit (
 
                         counter  = counter + 1;
 
-                    end else if(counter == 5'b00001)begin
+                    end else if(counter == 6'b000001)begin
 
                         if(ET == 1'b1 || LT == 1'b1)begin
 
                             PCSource = 3'b100;
                             PCWrite = 1'b1;
 
-                            counter = 5'b00000;
+                            counter = 6'b000000;
                             state = fetch;
 
                         end else begin
@@ -2396,7 +2417,7 @@ module ControlUnit (
                             AluSrcB = 3'b000;
                             AluOperation = 3'b000;
 
-                            counter = 5'b00000;
+                            counter = 6'b000000;
                             state = fetch;
 
                         end
@@ -2407,7 +2428,7 @@ module ControlUnit (
 
                 BGT: begin
 
-                    if(counter == 5'b00000) begin
+                    if(counter == 6'b000000) begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -2430,6 +2451,7 @@ module ControlUnit (
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
+                        multStart = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -2439,14 +2461,14 @@ module ControlUnit (
 
                         counter  = counter + 1;
 
-                    end else if(counter == 5'b00001)begin
+                    end else if(counter == 6'b000001)begin
 
                         if(GT == 1'b1)begin
 
                             PCSource = 3'b100;
                             PCWrite = 1'b1;
 
-                            counter = 5'b00000;
+                            counter = 6'b000000;
                             state = fetch;
 
                         end else begin
@@ -2455,7 +2477,7 @@ module ControlUnit (
                             AluSrcB = 3'b000;
                             AluOperation = 3'b000;
 
-                            counter = 5'b00000;
+                            counter = 6'b000000;
                             state = fetch;
 
                         end
@@ -2491,6 +2513,8 @@ module ControlUnit (
                     MemToReg = 3'b000;
                     RegDst = 2'b00;
                     RegWR = 1'b0;
+                    multStart = 1'b0;
+
                     reset_out = 1'b0;
 
                     PCSource = 3'b001;
@@ -2498,7 +2522,7 @@ module ControlUnit (
 
                     state = fetch;
 
-                    counter = 5'b00000;
+                    counter = 6'b000000;
 
                 end
 
@@ -2528,20 +2552,21 @@ module ControlUnit (
                     ShiftInputControl = 2'b00;
                     ShiftNControl = 2'b00;
                     ShiftControl = 3'b000;
+                    multStart = 1'b0;
 
                     reset_out = 1'b0;
 
                     PCSource = 3'b011;
                     PCWrite = 1'b1;
 
-                    counter = 5'b00000;
+                    counter = 6'b000000;
                     state = fetch;                    
 
                 end
 
                 JAL: begin
 
-                    if(counter == 5'b00000)begin
+                    if(counter == 6'b000000)begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -2565,6 +2590,7 @@ module ControlUnit (
                         ShiftControl = 3'b000;
                         PCSource = 3'b000;
                         PCWrite = 1'b0;   
+                        multStart = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -2588,7 +2614,7 @@ module ControlUnit (
                         AluOperation = 3'b000;
                         AluOutWrite = 1'b0;
 
-                        counter = 5'b00000;
+                        counter = 6'b000000;
                         state = fetch; 
 
                     end
@@ -2597,7 +2623,7 @@ module ControlUnit (
 
                 SLLM: begin
 
-                    if(counter == 5'b00000)begin
+                    if(counter == 6'b000000)begin
 
                         IorD = 3'b000;
                         CauseControl = 2'b00;
@@ -2620,6 +2646,7 @@ module ControlUnit (
                         HIWrite = 1'b0;
                         ShiftInputControl = 2'b00;
                         ShiftNControl = 2'b00;
+                        multStart = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -2630,7 +2657,7 @@ module ControlUnit (
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00001 || counter == 5'b00010) begin
+                    end else if(counter == 6'b000001 || counter == 6'b000010) begin
 
                         IorD = 3'b100;
                         MemWR = 1'b0;
@@ -2642,14 +2669,14 @@ module ControlUnit (
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00011) begin
+                    end else if(counter == 6'b000011) begin
 
                         MemDataWrite = 1'b1;
                         ShiftControl = 3'b001;
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00100)begin
+                    end else if(counter == 6'b000100)begin
 
                         ShiftControl = 3'b001; //load
                         ShiftInputControl = 2'b10;
@@ -2658,7 +2685,7 @@ module ControlUnit (
                         counter = counter + 1;
                         
 
-                    end else if(counter == 5'b00101) begin
+                    end else if(counter == 6'b000101) begin
 
                         ShiftControl = 3'b010;
 
@@ -2670,7 +2697,7 @@ module ControlUnit (
                         RegDst = 2'b00;
                         RegWR = 1'b1;
 
-                        counter = 5'b00000;
+                        counter = 6'b000000;
                         state = fetch;
 
                     end
@@ -2679,7 +2706,7 @@ module ControlUnit (
 
                 ADDM: begin
 
-                    if(counter == 5'b00000 || counter == 5'b00001) begin
+                    if(counter == 6'b000000 || counter == 6'b000001) begin
 
                         CauseControl = 2'b00;
                         IRWrite = 1'b0;
@@ -2704,6 +2731,7 @@ module ControlUnit (
                         AluSrcB = 3'b000;
                         AluOperation = 3'b000;
                         AluOutWrite = 1'b0;
+                        multStart = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -2712,13 +2740,13 @@ module ControlUnit (
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00010)begin
+                    end else if(counter == 6'b000010)begin
 
                         MemDataWrite = 1'b1;
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00011 || counter == 5'b00100)begin
+                    end else if(counter == 6'b000011 || counter == 6'b000100)begin
 
                         MemDataWrite = 1'b0;
                         IorD = 3'b010;
@@ -2726,7 +2754,7 @@ module ControlUnit (
 
                         counter = counter + 1;
 
-                    end else if(counter == 5'b00101) begin
+                    end else if(counter == 6'b000101) begin
 
                         AluSrcA = 2'b01;
                         AluSrcB = 3'b011;
@@ -2746,11 +2774,146 @@ module ControlUnit (
                         RegDst = 2'b01;
                         RegWR = 1'b1;
 
-                        counter = 5'b00000;
+                        counter = 6'b000000;
                         state = fetch;
 
                     end
 
+
+                end
+                
+                MFHI: begin
+
+                    IorD = 3'b000;
+                    CauseControl = 2'b00;
+                    MemWR = 1'b0;
+                    IRWrite = 1'b0;
+                    WriteA = 1'b0;
+                    WriteB = 1'b0;
+                    AluSrcA = 2'b00;
+                    AluSrcB = 3'b000;
+                    AluOperation = 3'b000;
+                    AluOutWrite = 1'b0;
+                    PCSource = 3'b000;
+                    PCWrite = 1'b0;
+                    EPCWrite = 1'b0;  
+                    MemDataWrite = 1'b0;
+                    LoadControl = 1'b0;
+                    StoreControl = 2'b00;
+                    MultOrDivLow = 1'b0;
+                    MultOrDivHigh = 1'b0;
+                    LOWrite = 1'b0;
+                    HIWrite = 1'b0;
+                    ShiftInputControl = 2'b00;
+                    ShiftNControl = 2'b00;
+                    ShiftControl = 3'b000;
+                    multStart = 1'b0;
+
+                    reset_out = 1'b1;
+
+                    MemToReg = 3'b000;
+                    RegDst = 2'b01;
+                    RegWR = 1'b1;
+
+                    state = fetch;
+
+                    counter = 6'b000000;
+
+                end
+
+                MFLO: begin
+
+                    IorD = 3'b000;
+                    CauseControl = 2'b00;
+                    MemWR = 1'b0;
+                    IRWrite = 1'b0;
+                    WriteA = 1'b0;
+                    WriteB = 1'b0;
+                    AluSrcA = 2'b00;
+                    AluSrcB = 3'b000;
+                    AluOperation = 3'b000;
+                    AluOutWrite = 1'b0;
+                    PCSource = 3'b000;
+                    PCWrite = 1'b0;
+                    EPCWrite = 1'b0;  
+                    MemDataWrite = 1'b0;
+                    LoadControl = 1'b0;
+                    StoreControl = 2'b00;
+                    MultOrDivLow = 1'b0;
+                    MultOrDivHigh = 1'b0;
+                    LOWrite = 1'b0;
+                    HIWrite = 1'b0;
+                    ShiftInputControl = 2'b00;
+                    ShiftNControl = 2'b00;
+                    ShiftControl = 3'b000;
+                    multStart = 1'b0;
+
+                    reset_out = 1'b0;
+
+                    MemToReg = 3'b001;
+                    RegDst = 2'b01;
+                    RegWR = 1'b1;
+
+                    state = fetch;
+
+                    counter = 6'b000000;
+
+                end
+
+                MULT: begin
+
+                    if(counter == 6'b000000) begin
+
+                        IorD = 3'b000;
+                        CauseControl = 2'b00;
+                        MemWR = 1'b0;
+                        IRWrite = 1'b0;
+                        RegDst = 2'b00;
+                        MemToReg = 3'b000;
+                        RegWR = 1'b0;
+                        WriteA = 1'b0;
+                        WriteB = 1'b0;
+                        AluSrcA = 2'b00;
+                        AluSrcB = 3'b000;
+                        AluOperation = 3'b000;
+                        AluOutWrite = 1'b0;
+                        PCSource = 3'b000;
+                        PCWrite = 1'b0;
+                        EPCWrite = 1'b0;  
+                        MemDataWrite = 1'b0;
+                        LoadControl = 1'b0;
+                        StoreControl = 2'b00;
+                        LOWrite = 1'b0;
+                        HIWrite = 1'b0;
+                        ShiftInputControl = 2'b00;
+                        ShiftNControl = 2'b00;
+                        ShiftControl = 3'b000;
+
+                        reset_out = 1'b0;
+
+                        multStart = 1'b1;
+                        MultOrDivHigh = 1'b0;
+                        MultOrDivLow = 1'b0;
+
+                        counter = counter + 1;
+
+                    end else if(counter == 6'b100001) begin
+                        
+                        LOWrite = 1'b1;
+                        HIWrite = 1'b1;
+
+                        counter = 6'b000000;
+                        state = fetch;
+
+                    end else begin
+                        
+                        multStart = 1'b0;
+                        MultOrDivHigh = 1'b0;
+                        MultOrDivLow = 1'b0;
+
+                        counter = counter + 1;
+
+                    end                    
 
                 end
 
