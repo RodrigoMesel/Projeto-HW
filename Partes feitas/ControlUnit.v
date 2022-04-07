@@ -1123,7 +1123,7 @@ module ControlUnit (
 
                 op404 : begin
 
-                    if(counter != 5'b00010)begin
+                    if(counter == 6'b00000)begin
 
                         IRWrite = 1'b0;
                         RegDst = 2'b00;
@@ -1152,6 +1152,15 @@ module ControlUnit (
                         CauseControl = 2'b00;
                         IorD = 3'b001;
                         MemWR = 1'b0;
+                        
+                        counter = counter + 1;
+
+                    end else if(counter == 6'b000001) begin
+
+                        CauseControl = 2'b00;
+                        IorD = 3'b001;
+                        MemWR = 1'b0;
+
                         AluSrcA = 2'b00;
                         AluSrcB = 3'b001;
                         AluOperation = 3'b010;
@@ -1159,9 +1168,6 @@ module ControlUnit (
                         counter = counter + 1;
 
                     end else begin
-
-                        AluSrcB = 3'b000;
-                        AluOperation = 3'b000;
 
                         EPCWrite = 1'b1;
                         PCSource = 3'b000;
