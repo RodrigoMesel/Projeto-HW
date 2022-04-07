@@ -54,7 +54,7 @@ module CPU (input clk, reset);
     wire [27:0] JumpShifted;
     wire [31:0] JumpAddress;
 
-    //Multiplication and divison
+    //Multiplication and division
     wire [31:0] MultHiOut;
     wire [31:0] MultLoOut;
     wire [31:0] DivHiOut;
@@ -63,7 +63,6 @@ module CPU (input clk, reset);
     wire [31:0] MultOrDivLowOut;
     wire [31:0] HighOut;
     wire [31:0] LowOut;
-    wire DivZero;
 
     //ALU
     wire zero;
@@ -97,6 +96,8 @@ module CPU (input clk, reset);
     wire MultOrDivLow;
     wire MultOrDivHigh;
     wire multStart;
+    wire divStart;
+    wire DivZero;
     wire LOWrite;
     wire HIWrite;
     wire [1:0] ShiftInputControl;
@@ -257,6 +258,10 @@ module CPU (input clk, reset);
 
     Mult multiplication(
         clk, reset, multStart, AOut, BOut, MultHiOut, MultLoOut  
+    );
+
+    Div division(
+        clk, reset, divStart, AOut, BOut, DivZero, DivHiOut, DivLoOut
     );
 
     //Unidade de controle
