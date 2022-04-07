@@ -1200,6 +1200,66 @@ module ControlUnit (
 
                 end
 
+                ZeroDiv_State: begin
+
+                    if(counter == 6'b00000)begin
+
+                        IRWrite = 1'b0;
+                        RegDst = 2'b00;
+                        MemToReg = 3'b000;
+                        RegWR = 1'b0;
+                        WriteA = 1'b0;
+                        WriteB = 1'b0;
+                        AluOutWrite = 1'b0;
+                        PCSource = 3'b000;
+                        PCWrite = 1'b0;
+                        EPCWrite = 1'b0;  
+                        MemDataWrite = 1'b0;
+                        LoadControl = 1'b0;
+                        StoreControl = 2'b00;
+                        MultOrDivLow = 1'b0;
+                        MultOrDivHigh = 1'b0;
+                        LOWrite = 1'b0;
+                        HIWrite = 1'b0;
+                        ShiftInputControl = 2'b00;
+                        ShiftNControl = 2'b00;
+                        ShiftControl = 3'b000;
+                        multStart = 1'b0;
+                        divStart = 1'b0;
+
+                        reset_out = 1'b0;
+
+                        CauseControl = 2'b10;
+                        IorD = 3'b001;
+                        MemWR = 1'b0;
+                        
+                        counter = counter + 1;
+
+                    end else if(counter == 6'b000001) begin
+
+                        CauseControl = 2'b00;
+                        IorD = 3'b001;
+                        MemWR = 1'b0;
+
+                        AluSrcA = 2'b00;
+                        AluSrcB = 3'b001;
+                        AluOperation = 3'b010;
+
+                        counter = counter + 1;
+
+                    end else begin
+
+                        EPCWrite = 1'b1;
+                        PCSource = 3'b000;
+                        PCWrite = 1'b1;
+
+                        state = fetch;
+                        counter = 6'b000000;
+
+                    end                    
+
+                end
+
                 LUI: begin
                     if(counter == 6'b000000)begin
 
@@ -3002,7 +3062,6 @@ module ControlUnit (
                         ShiftNControl = 2'b00;
                         ShiftControl = 3'b000;
                         multStart = 1'b0;
-                        divStart = 1'b0;
 
                         reset_out = 1'b0;
 
@@ -3022,12 +3081,48 @@ module ControlUnit (
 
                     end else begin
 
-                        divStart = 1'b0;
-                        MultOrDivHigh = 1'b1;
-                        MultOrDivLow = 1'b1;
+                            if(DivZero == 1'b1)begin
 
-                        counter = counter + 1;
+                                IorD = 3'b000;
+                                CauseControl = 2'b00;
+                                MemWR = 1'b0;
+                                IRWrite = 1'b0;
+                                RegDst = 2'b00;
+                                MemToReg = 3'b000;
+                                RegWR = 1'b0;
+                                WriteA = 1'b0;
+                                WriteB = 1'b0;
+                                AluSrcA = 2'b00;
+                                AluSrcB = 3'b000;
+                                AluOperation = 3'b000;
+                                AluOutWrite = 1'b0;
+                                PCSource = 3'b000;
+                                PCWrite = 1'b0;
+                                EPCWrite = 1'b0;  
+                                MemDataWrite = 1'b0;
+                                LoadControl = 1'b0;
+                                StoreControl = 2'b00;
+                                MultOrDivLow = 1'b0;
+                                MultOrDivHigh = 1'b0;
+                                LOWrite = 1'b0;
+                                HIWrite = 1'b0;
+                                ShiftInputControl = 2'b00;
+                                ShiftNControl = 2'b00;
+                                ShiftControl = 3'b000;
+                                multStart = 1'b0;
+                                divStart = 1'b0;
+                                
+                                reset_out = 1'b0;
 
+                                state = ZeroDiv_State;
+                                counter = 6'b000000;
+                            end else begin
+                                divStart = 1'b0;
+                                MultOrDivHigh = 1'b1;
+                                MultOrDivLow = 1'b1;
+
+                                counter = counter + 1;
+                            end
                     end
 
                 end

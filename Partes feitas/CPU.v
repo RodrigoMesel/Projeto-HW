@@ -273,7 +273,7 @@ module CPU (input clk, reset);
         AluOperation, AluOutWrite, PCSource, PCWrite, EPCWrite,
         MemDataWrite, LoadControl, StoreControl, 
         MultOrDivLow, MultOrDivHigh, LOWrite, HIWrite,
-        ShiftInputControl, ShiftNControl, ShiftControl, multStart, reset 
+        ShiftInputControl, ShiftNControl, ShiftControl, multStart, divStart,reset 
     );
 
 
