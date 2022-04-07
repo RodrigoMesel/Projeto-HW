@@ -5,8 +5,7 @@ module CPU (input clk, reset);
     wire [31:0] PCOut;
     wire [31:0] EPCOut;
     wire [3:0] PCAux;
-    wire [7:0] CauseControlOut;
-    wire [31:0] CauseControlOut32bits;
+    wire [31:0] CauseControlOut;
     wire [31:0] IorDOut;
     wire [31:0] MemOut;
 
@@ -170,7 +169,7 @@ module CPU (input clk, reset);
     );
     
     muxiord iord(
-        PCOut, CauseControlOut32bits, AOut, BOut, AluOutResult, IorD, IorDOut
+        PCOut, CauseControlOut, AOut, BOut, AluOutResult, IorD, IorDOut
     );
 
     muxregdst regdst(

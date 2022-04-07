@@ -1153,9 +1153,6 @@ module ControlUnit (
 
                     end else begin
 
-                        AluSrcB = 3'b000;
-                        AluOperation = 3'b000;
-
                         EPCWrite = 1'b1;
                         PCSource = 3'b000;
                         PCWrite = 1'b1;
