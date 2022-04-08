@@ -96,7 +96,7 @@ module Div(input wire clk, reset, divStart, input wire [31:0] A, B, output reg D
 
                         if(sinalDivisor == 1'b1)begin
 
-                            Hi = - resto;
+                            Hi = ~resto + 1'b1;
 
                         end else begin
 
