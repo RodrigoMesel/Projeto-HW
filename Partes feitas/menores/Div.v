@@ -26,12 +26,6 @@ module Div(input wire clk, reset, divStart, input wire [31:0] A, B, output reg D
             Hi = 32'b0;
             Lo = 32'b0;
 
-            if(B == 32'b0) begin
-
-                DivZero = 1'b1;
-
-            end
-
         end
 
         if(divStart == 1'b1)begin
@@ -46,12 +40,6 @@ module Div(input wire clk, reset, divStart, input wire [31:0] A, B, output reg D
             sinalDivisor = divisor[31];
             Hi = 32'b0;
             Lo = 32'b0;
-
-            if(B == 32'b0) begin
-
-                DivZero = 1'b1;
-                
-            end 
             
             if(divisor[31] == 1'b1)begin
 
@@ -69,52 +57,59 @@ module Div(input wire clk, reset, divStart, input wire [31:0] A, B, output reg D
 
         if(aux == 1'b1 && nOfBits != 0)begin
 
-            resto = resto << 1;
-            resto[0] = dividendo[nOfBits - 1];
+            if(B == 32'b0) begin
 
-            if(resto >= divisor)begin
+                DivZero = 1'b1;
+                nOfBits = 6'b0;
+                
+            end else begin
 
-                resto = resto - divisor;
-                resultado[nOfBits - 1] = 1'b1;
+                resto = resto << 1;
+                resto[0] = dividendo[nOfBits - 1];
 
-            end
+                if(resto >= divisor)begin
 
-            nOfBits = nOfBits - 1;
-
-            if(nOfBits == 6'b000000)begin
-
-                if(sinalDividendo != sinalDivisor)begin
-
-                    if(sinalDivisor == 1'b1)begin
-
-                        Hi = -(divisor - resto);
-
-                    end else begin
-
-                        Hi = divisor - resto;
-
-                    end
-
-                    Lo = -(resultado + 1'b1);
-
-                end else begin
-
-                    if(sinalDivisor == 1'b1)begin
-
-                        Hi = - resto;
-
-                    end else begin
-
-                        Hi = resto;
-
-                    end                    
-
-                    Lo = resultado;
+                    resto = resto - divisor;
+                    resultado[nOfBits - 1] = 1'b1;
 
                 end
 
-            end
+                nOfBits = nOfBits - 1;
 
+                if(nOfBits == 6'b000000)begin
+
+                    if(sinalDividendo != sinalDivisor)begin
+
+                        if(sinalDivisor == 1'b1)begin
+
+                            Hi = ~resto + 1'b1;
+
+                        end else begin
+
+                            Hi = resto;
+
+                        end
+
+                        Lo = ~resultado + 1'b1;
+
+                    end else begin
+
+                        if(sinalDivisor == 1'b1)begin
+
+                            Hi = - resto;
+
+                        end else begin
+
+                            Hi = resto;
+
+                        end                    
+
+                        Lo = resultado;
+
+                    end
+
+                end
+            end
         end
 
     end
