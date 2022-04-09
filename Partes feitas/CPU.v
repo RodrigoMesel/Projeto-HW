@@ -33,10 +33,6 @@ module CPU (input clk, reset);
 
     wire [31:0] MemDataRegisterOut;
     wire [4:0] MemDataRegisterOut5bits;
-    wire [15:0] MemDataRegisterOutToLH;
-    wire [31:0] MemDataRegisterOutToLHExtendido;
-    wire [7:0] MemDataRegisterOutToLB; 
-    wire [31:0] MemDataRegisterOutToLBExtendido; 
     wire [31:0] LoadOut;
     wire [31:0] StoreOut;
     wire [31:0] SOut;
@@ -110,8 +106,8 @@ module CPU (input clk, reset);
 
     variaveisMontador vM(
         PCOut, Imediato, MemDataRegisterOut, RS, RT, BOut,
-        PCAux, RD, SHAMT, MemDataRegisterOutToLH, MemDataRegisterOutToLB,
-        JumpFromInstruction, BOut5bits, MemDataRegisterOut5bits, SHOut, SBOut, SOut
+        PCAux, RD, SHAMT, JumpFromInstruction, BOut5bits, 
+        MemDataRegisterOut5bits, SHOut, SBOut, SOut
     );
 
     Memoria mem(
@@ -200,7 +196,7 @@ module CPU (input clk, reset);
     );
 
     muxload load(
-        MemDataRegisterOutToLHExtendido, MemDataRegisterOutToLBExtendido, MemDataRegisterOut, LoadControl, LoadOut
+        {{16{1'b0}}, MemDataRegisterOut[15:0]}, {{24{1'b0}}, MemDataRegisterOut[7:0]}, MemDataRegisterOut, LoadControl, LoadOut
     );
 
     muxStore store(
@@ -228,14 +224,6 @@ module CPU (input clk, reset);
 
     signext16_32 imediatoExtender(
         Imediato, ImediatoExtendido32bits
-    );
-
-    signext16_32 loadHfExtender(
-        MemDataRegisterOutToLH, MemDataRegisterOutToLHExtendido
-    );
-
-    signext8_32 loadBtExtender(
-        MemDataRegisterOutToLB, MemDataRegisterOutToLBExtendido
     );
 
     signext1_32 LTExtender(
